@@ -40,7 +40,7 @@ Blessing Skin is an open-source project written in PHP, which means you can depl
 Blessing Skin has only a few system requirements. In most cases, these PHP extensions are already enabled.
 
 - Web server with URL rewriting enabled (Nginx or Apache)
-- PHP >= 7.2.5
+- PHP >= 7.4.0
 - PHP Extensions
   - OpenSSL
   - PDO
@@ -121,6 +121,13 @@ Currently you can sponsor us via [爱发电](https://afdian.net/@blessing-skin).
           <img src="https://pic1.afdiancdn.com/user/18ad3338e58a11e9b29352540025c377/avatar/eb04b4b54975d0d229e77fbcd4220dc4_w1080_h1920_s541.jpg" width="75" height="75">
           <br>
           皮皮帕
+        </a>
+      </td>
+      <td align=center>
+        <a href="https://afdian.net/@fsj_mc">
+          <img src="https://pic1.afdiancdn.com/user/5ae206b6573c11e9b32352540025c377/avatar/27be12f855c0d52ee4a3abeb8e5e9274_w900_h900_s710.jpg" width="75" height="75">
+          <br>
+          fsj
         </a>
       </td>
       <td align=center>
