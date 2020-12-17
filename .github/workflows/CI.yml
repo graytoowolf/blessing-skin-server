@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - dev
+    paths-ignore:
+      - 'resources/lang/**'
+      - '**.md'
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - 'resources/lang/**'
+      - '**.md'
+
+jobs:
+  php-lint:
+    name: PHP Linting
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 7.4
+        coverage: none
+        extensions: mbstring, dom, fileinfo, gd
+    - name: Install dependencies
+      run: |
+        composer install --prefer-dist --no-progress
+        composer global require friendsofphp/php-cs-fixer
+    - name: Prepare
+      run: |
+        cp .env.example .env
+        php artisan key:generate
+        mkdir -p resources/views/overrides
+    - name: Validate Twig templates
+      run: php artisan twig:lint -v
+    - name: Check coding style
+      run: php-cs-fixer fix --dry-run --stop-on-violation --diff-format=udiff
+  php:
+    name: PHP ${{ matrix.php }} Tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    strategy:
+      fail-fast: false
+      matrix:
+        php: ['7.4']
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Setup PHP only
+      uses: shivammathur/setup-php@v2
+      if: matrix.php != '7.4'
+      with:
+        php-version: ${{ matrix.php }}
+        coverage: none
+        extensions: mbstring, dom, fileinfo, sqlite, gd, zip
+    - name: Setup PHP with Xdebug
+      uses: shivammathur/setup-php@v2
+      if: matrix.php == '7.4'
+      with:
+        php-version: ${{ matrix.php }}
+        coverage: xdebug
+        extensions: mbstring, dom, fileinfo, sqlite, gd, zip
+    - name: Cache Composer dependencies
+      uses: actions/cache@v1
+      with:
+        path: vendor
+        key: ${{ runner.os }}-composer-${{ hashFiles('composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+    - name: Install Composer dependencies
+      run: composer install --no-progress --prefer-dist --optimize-autoloader
+    - name: Run tests only
+      if: matrix.php != '7.4'
+      run: ./vendor/bin/phpunit
+    - name: Run tests with coverage report
+      if: matrix.php == '7.4'
+      run: ./vendor/bin/phpunit --coverage-clover=coverage.xml
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v1
+      if: matrix.php == '7.4' && success()
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        name: github-actions
+  lint:
+    name: Frontend Linting
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: yarn
+    - name: Run checks
+      run: |
+        yarn lint
+        yarn fmt:check
+        yarn tsc -p . --noEmit
+        yarn tsc -p ./resources/assets/tests --noEmit
+  jest:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'skip ci')"
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Install dependencies
+      run: yarn
+    - name: Run tests
+      run: yarn test --coverage
+    - name: Upload coverage report
+      uses: codecov/codecov-action@v1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        name: github-actions
