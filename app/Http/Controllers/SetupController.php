@@ -52,7 +52,7 @@ class SetupController extends Controller
         try {
             $manager->connection('temp')->getPdo();
         } catch (\Exception $e) {
-            $msg = iconv('gbk', 'utf-8', $e->getMessage());
+            $msg = $e->getMessage();
             $type = Arr::get([
                 'mysql' => 'MySQL/MariaDB',
                 'sqlite' => 'SQLite',
@@ -112,7 +112,6 @@ class SetupController extends Controller
             'site_name' => 'required',
         ]);
 
-        $artisan->call('jwt:secret', ['--no-interaction' => true]);
         $artisan->call('passport:keys', ['--no-interaction' => true]);
 
         // Create tables
