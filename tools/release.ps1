@@ -1,4 +1,4 @@
-$manifest = Invoke-WebRequest 'https://dev.azure.com/graytoowolf/b31f3ddc-31f9-44b4-a216-f4a129ef91e7/_apis/git/repositories/e285d1f1-6f31-4b37-9768-5d7d62b1d80f/items?path=%2Fupdate.json' | ConvertFrom-Json
+$manifest = Invoke-WebRequest 'https://xz.mcpifu.top/update.json' | ConvertFrom-Json
 $last = $manifest.latest
 $latest=(Get-Content package.json | ConvertFrom-Json).version+'-'+(git rev-parse HEAD).Substring(0,7)
 
@@ -24,12 +24,3 @@ $manifest.url = $manifest.url.Replace($last, $latest)
 $manifest.php = '7.4.0'
 ConvertTo-Json $manifest | Out-File -FilePath update.json
 Write-Host "Update source is prepared." -ForegroundColor Green
-
-$azureToken = $env:AZURE_TOKEN
-git config --global user.email 'graytoowolf'
-git config --global user.name 'graywolf'
-git init
-git add .
-git commit -m "Publish"
-git push -f "https://anything:$azureToken@dev.azure.com/graytoowolf/xz/_git/xz" master
-Write-Host "Update source is pushed to Azure Repos." -ForegroundColor Green

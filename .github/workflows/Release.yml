@@ -15,8 +15,15 @@ jobs:
     - name: Build and create archive
       run: ./tools/release.ps1
       shell: pwsh
-      env:
-        AZURE_TOKEN: ${{ secrets.AZURE_TOKEN }}
+    - name: Upload qiniu
+      run: |
+        wget http://devtools.qiniu.com/qshell-linux-x86-v2.4.2.zip
+        unzip qshell-linux-x86-v2.4.2.zip
+        mv qshell-linux-x86-v2.4.2 qshell
+        ./qshell account ${{ secrets.QINIU_AccessKey }} ${{ secrets.QINIU_SecretKey }} bs
+        ./qshell listbucket ${{ secrets.QINIU_Name }} -o list.txt
+        ./qshell batchdelete --force ${{ secrets.QINIU_Name }} -i list.txt
+        ./qshell qupload2 --src-dir=./dist --bucket=${{ secrets.QINIU_Name }} --up-host=http://upload-z2.qiniu.com
     - name: Upload Artifact
       uses: actions/upload-artifact@master
       with:
