@@ -1,6 +1,9 @@
 $manifest = Invoke-WebRequest 'https://xz.mcpifu.top/update.json' | ConvertFrom-Json
 $last = $manifest.latest
-$latest=(Get-Content package.json | ConvertFrom-Json).version+'-'+(git rev-parse HEAD).Substring(0,7)
+$version = (Get-Content package.json | ConvertFrom-Json).version
+$latest = $version + '-' + (Get-Date -Format 'yyyyMMdd')
+
+(Get-Content -Path ./config/app.php) | ForEach-Object {$_ -Replace $version,$latest} | Set-Content -Path ./config/app.php
 
 # Install dependencies
 composer install --no-dev --prefer-dist --no-progress
