@@ -1,4 +1,4 @@
-$manifest = Invoke-WebRequest 'https://xz.mcpifu.top/update.json' | ConvertFrom-Json
+$manifest = Invoke-WebRequest 'http://bs.mcpifu.top/update.json' | ConvertFrom-Json
 $last = $manifest.latest
 $version = (Get-Content package.json | ConvertFrom-Json).version
 $latest = $version + '-' + (Get-Date -Format 'yyyyMMdd')
