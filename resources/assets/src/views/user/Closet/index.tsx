@@ -71,8 +71,18 @@ const Closet: React.FC = () => {
     getItems()
   }, [category, query, page])
 
-  const switchCategory = () => {
-    setCategory((category) => (category === 'skin' ? 'cape' : 'skin'))
+  const switchCategoryToSkin = () => {
+    if (category !== 'skin') {
+      setCategory('skin')
+      setPage(1)
+    }
+  }
+
+  const switchCategoryToCape = () => {
+    if (category !== 'cape') {
+      setCategory('cape')
+      setPage(1)
+    }
   }
 
   const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -165,7 +175,7 @@ const Closet: React.FC = () => {
                   className={`nav-link ${category === 'skin' ? 'active' : ''}`}
                   data-toggle="pill"
                   role="tab"
-                  onClick={switchCategory}
+                  onClick={switchCategoryToSkin}
                 >
                   {t('general.skin')}
                 </a>
@@ -178,7 +188,7 @@ const Closet: React.FC = () => {
                   }`}
                   data-toggle="pill"
                   role="tab"
-                  onClick={switchCategory}
+                  onClick={switchCategoryToCape}
                 >
                   {t('general.cape')}
                 </a>
