@@ -143,7 +143,20 @@ const Card: React.FC<Props> = (props) => {
               </span>
             </div>
           </InfoTable>
+		  <div>
+            <small className="text-gray">             
+              {'IP: '}
+              {user.ip}
+            </small>
+          </div>
           <div>
+            <small className="text-gray">
+              {t('general.user.last_sign_at')}
+              {': '}
+              {user.last_sign_at}
+            </small>
+          </div>
+		  <div>
             <small className="text-gray">
               {t('general.user.register-at')}
               {': '}
