@@ -255,7 +255,8 @@ general:
     nickname: 昵称
     score: 积分
     register-at: 注册时间
-    last_sign_at: 最近登陆
+    register-ip: 注册IP
+    last_sign_at: 最近签到
   player:
     owner: 拥有者
     player-name: 角色名

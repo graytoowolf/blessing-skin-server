@@ -312,9 +312,9 @@ const UsersManagement: React.FC = () => {
                 <th>{t('general.user.score')}</th>
                 <th>{t('admin.permission')}</th>
                 <th>{t('admin.verification')}</th>
-				<th>IP</th>
 				<th>{t('general.user.last_sign_at')}</th>
                 <th>{t('general.user.register-at')}</th>
+				<th>{t('general.user.register-ip')}</th>
                 <th>{t('admin.operationsTitle')}</th>
               </tr>
             </thead>

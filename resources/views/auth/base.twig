@@ -3,6 +3,17 @@
   <head>
     {{ include('shared.head') }}
     <title>{% block title %}{% endblock %} - {{ site_name }}</title>
+    <style>
+      .login-page {
+		background-image: url("/app/bg.webp");
+		background-size: cover;
+		background-repeat: no-repeat;
+		background-position: center 0;
+		}
+      .card{
+        opacity: 0.75;
+      }
+    </style>
   </head>
 
   <body class="hold-transition login-page">
