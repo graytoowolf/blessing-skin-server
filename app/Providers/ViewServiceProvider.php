@@ -22,6 +22,7 @@ class ViewServiceProvider extends ServiceProvider
                 'site_name' => option_localized('site_name'),
                 'navbar_color' => $color,
                 'color_mode' => in_array($color, $lightColors) ? 'light' : 'dark',
+                'dark_mode' => (bool) optional(auth()->user())->is_dark_mode,
                 'locale' => str_replace('_', '-', app()->getLocale()),
             ]);
         });
@@ -46,7 +47,11 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('shared.user-menu', Composers\UserMenuComposer::class);
 
         View::composer('shared.sidebar', function ($view) {
-            $view->with('sidebar_color', option('sidebar_color'));
+            $isDarkMode = (bool) optional(auth()->user())->is_dark_mode;
+            $color = option('sidebar_color');
+            $color = $isDarkMode ? str_replace('light', 'dark', $color) : $color;
+
+            $view->with('sidebar_color', $color);
         });
 
         View::composer('shared.side-menu', Composers\SideMenuComposer::class);
@@ -63,6 +68,12 @@ class ViewServiceProvider extends ServiceProvider
         });
 
         View::composer('shared.foot', Composers\FootComposer::class);
+
+        View::composer('shared.dark-mode', function ($view) {
+            $view->with([
+                'dark_mode' => (bool) optional(auth()->user())->is_dark_mode,
+            ]);
+        });
 
         View::composer('assets.*', function ($view) {
             $view->with('cdn_base', option('cdn_address', ''));

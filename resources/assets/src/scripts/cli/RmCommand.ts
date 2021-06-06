@@ -24,8 +24,9 @@ export default async function rm(stdio: Stdio, args: string[]) {
     )
     .option('--no-preserve-root', "do not treat '/' specially")
 
-  const opts: Options = program.parse(['', ''].concat(args), { run: false })
-    .options
+  const opts: Options = program.parse(['', ''].concat(args), {
+    run: false,
+  }).options
   const path = program.args[0]
 
   if (!path && !opts.help) {
@@ -33,7 +34,7 @@ export default async function rm(stdio: Stdio, args: string[]) {
     stdio.println("Try 'rm --help' for more information.")
   }
 
-  if (opts.force && opts.recursive && path.startsWith('/')) {
+  if (opts.force && opts.recursive && path?.startsWith('/')) {
     await fetch.post('/admin/resource?clear-cache')
   }
 }

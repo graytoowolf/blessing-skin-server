@@ -82,12 +82,8 @@ describe('input file', () => {
   })
 
   it('do not overwrite existing name', () => {
-    const {
-      getByTitle,
-      getByLabelText,
-      queryByDisplayValue,
-      queryByText,
-    } = render(<Upload />)
+    const { getByTitle, getByLabelText, queryByDisplayValue, queryByText } =
+      render(<Upload />)
 
     fireEvent.input(getByLabelText(t('skinlib.upload.texture-name')), {
       target: { value: 'my texture' },
@@ -170,13 +166,8 @@ describe('upload texture', () => {
   })
 
   it('no name', () => {
-    const {
-      getByText,
-      getByLabelText,
-      getByTitle,
-      getByRole,
-      queryByText,
-    } = render(<Upload />)
+    const { getByText, getByLabelText, getByTitle, getByRole, queryByText } =
+      render(<Upload />)
 
     const file = new File([], 't.png')
     fireEvent.change(getByTitle(t('skinlib.upload.select-file')), {
@@ -221,7 +212,7 @@ describe('upload texture', () => {
       expect.any(FormData),
     )
 
-    const formData = fetch.post.mock.calls[0][1] as FormData
+    const formData = fetch.post.mock.calls[0]![1] as FormData
     expect(formData.get('name')).toBe('t')
     expect(formData.get('type')).toBe('steve')
     expect(formData.get('file')).toStrictEqual(file)
@@ -241,7 +232,7 @@ describe('upload texture', () => {
     fireEvent.click(getByText(t('skinlib.upload.button')))
 
     await waitFor(() => expect(fetch.post).toBeCalled())
-    const formData = fetch.post.mock.calls[0][1] as FormData
+    const formData = fetch.post.mock.calls[0]![1] as FormData
     expect(formData.get('public')).toBe('0')
   })
 

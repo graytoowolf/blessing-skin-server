@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from '@emotion/styled'
 import { t } from '@/scripts/i18n'
-import { Plugin } from './types'
+import type { Plugin } from './types'
 
 const Box = styled.div`
   cursor: default;
@@ -19,6 +19,9 @@ const ActionButton = styled.a`
   transition-property: color;
   transition-duration: 0.3s;
   color: #000;
+  .dark-mode & {
+    color: #fff;
+  }
   &:hover {
     color: #999;
   }

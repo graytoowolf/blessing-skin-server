@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { t } from '@/scripts/i18n'
 import * as fetch from '@/scripts/net'
 import { toast } from '@/scripts/notify'
-import { Player } from '@/scripts/types'
+import type { Player } from '@/scripts/types'
 import urls from '@/scripts/urls'
 import Modal from '@/components/Modal'
 
@@ -27,9 +27,13 @@ const ModalAddPlayer: React.FC<Props> = (props) => {
   }
 
   const handleConfirm = async () => {
-    const { code, message, data: player } = await fetch.post<
-      fetch.ResponseBody<Player>
-    >(urls.user.player.add(), { name })
+    const {
+      code,
+      message,
+      data: player,
+    } = await fetch.post<fetch.ResponseBody<Player>>(urls.user.player.add(), {
+      name,
+    })
     if (code === 0) {
       toast.success(message)
       props.onAdd(player)

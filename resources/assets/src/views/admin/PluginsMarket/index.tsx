@@ -7,7 +7,7 @@ import * as fetch from '@/scripts/net'
 import { toast, showModal } from '@/scripts/notify'
 import Loading from '@/components/Loading'
 import Pagination from '@/components/Pagination'
-import { Plugin } from './types'
+import type { Plugin } from './types'
 import Row from './Row'
 
 enableMapSet()
@@ -56,16 +56,21 @@ const PluginsMarket: React.FC = () => {
       installings.add(plugin.name)
     })
 
-    const { code, message, data = { reason: [] } } = await fetch.post<
-      fetch.ResponseBody<{ reason: string[] }>
-    >('/admin/plugins/market/download', {
-      name: plugin.name,
-    })
+    const {
+      code,
+      message,
+      data = { reason: [] },
+    } = await fetch.post<fetch.ResponseBody<{ reason: string[] }>>(
+      '/admin/plugins/market/download',
+      {
+        name: plugin.name,
+      },
+    )
     if (code === 0) {
       toast.success(message)
       setPlugins((plugins) => {
-        plugins[index].can_update = false
-        plugins[index].installed = plugins[index].version
+        plugins[index]!.can_update = false
+        plugins[index]!.installed = plugins[index]!.version
       })
     } else {
       showModal({

@@ -199,7 +199,7 @@ describe('edit texture name', () => {
     )
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0]!)
     fireEvent.input(getByDisplayValue(fixtureSkin.name), {
       target: { value: '' },
     })
@@ -223,7 +223,7 @@ describe('edit texture name', () => {
     } = render(<Show />)
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0]!)
     fireEvent.input(getByDisplayValue(fixtureSkin.name), {
       target: { value: 't' },
     })
@@ -250,7 +250,7 @@ describe('edit texture name', () => {
     } = render(<Show />)
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[0]!)
     fireEvent.input(getByDisplayValue(fixtureSkin.name), {
       target: { value: 't' },
     })
@@ -278,7 +278,7 @@ describe('edit texture type', () => {
     )
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1]!)
     fireEvent.click(getByLabelText('Alex'))
     fireEvent.click(getByText(t('general.cancel')))
     await waitFor(() => expect(fetch.put).not.toBeCalled())
@@ -288,16 +288,11 @@ describe('edit texture type', () => {
   it('succeeded', async () => {
     fetch.put.mockResolvedValue({ code: 0, message: 'ok' })
 
-    const {
-      getByText,
-      getAllByTitle,
-      getByLabelText,
-      getByRole,
-      queryByText,
-    } = render(<Show />)
+    const { getByText, getAllByTitle, getByLabelText, getByRole, queryByText } =
+      render(<Show />)
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1]!)
     fireEvent.click(getByLabelText('Alex'))
     fireEvent.click(getByText(t('general.confirm')))
     await waitFor(() =>
@@ -313,16 +308,11 @@ describe('edit texture type', () => {
   it('failed', async () => {
     fetch.put.mockResolvedValue({ code: 1, message: 'failed' })
 
-    const {
-      getByText,
-      getAllByTitle,
-      getByLabelText,
-      getByRole,
-      queryByText,
-    } = render(<Show />)
+    const { getByText, getAllByTitle, getByLabelText, getByRole, queryByText } =
+      render(<Show />)
     await waitFor(() => expect(fetch.get).toBeCalledTimes(1))
 
-    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1])
+    fireEvent.click(getAllByTitle(t('skinlib.show.edit'))[1]!)
     fireEvent.click(getByLabelText('Alex'))
     fireEvent.click(getByText(t('general.confirm')))
     await waitFor(() =>

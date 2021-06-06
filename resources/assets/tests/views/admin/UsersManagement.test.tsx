@@ -18,6 +18,7 @@ const fixture: Readonly<User> = Object.freeze<User>({
   avatar: 0,
   permission: UserPermission.Normal,
   ip: '::1',
+  is_dark_mode: false,
   last_sign_at: new Date().toString(),
   register_at: new Date().toString(),
   verified: true,
@@ -600,12 +601,8 @@ describe('update password', () => {
   it('succeeded', async () => {
     fetch.put.mockResolvedValue({ code: 0, message: 'ok' })
 
-    const {
-      getByText,
-      getByPlaceholderText,
-      queryByText,
-      queryByRole,
-    } = render(<UsersManagement />)
+    const { getByText, getByPlaceholderText, queryByText, queryByRole } =
+      render(<UsersManagement />)
 
     await waitFor(() => expect(fetch.get).toBeCalled())
     fireEvent.click(getByText(t('admin.changePassword')))
@@ -626,12 +623,8 @@ describe('update password', () => {
   it('failed', async () => {
     fetch.put.mockResolvedValue({ code: 1, message: 'failed' })
 
-    const {
-      getByText,
-      getByPlaceholderText,
-      queryByText,
-      queryByRole,
-    } = render(<UsersManagement />)
+    const { getByText, getByPlaceholderText, queryByText, queryByRole } =
+      render(<UsersManagement />)
 
     await waitFor(() => expect(fetch.get).toBeCalled())
     fireEvent.click(getByText(t('admin.changePassword')))

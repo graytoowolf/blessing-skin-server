@@ -441,7 +441,7 @@ describe('apply textures to player', () => {
 
     expect(await findByText(fixturePlayer.name)).toBeInTheDocument()
 
-    fireEvent.input(getAllByPlaceholderText(t('user.typeToSearch'))[1], {
+    fireEvent.input(getAllByPlaceholderText(t('user.typeToSearch'))[1]!, {
       target: { value: 'reina' },
     })
     expect(queryByText(fixturePlayer.name)).not.toBeInTheDocument()
@@ -453,13 +453,8 @@ describe('apply textures to player', () => {
       .mockResolvedValueOnce([fixturePlayer])
     fetch.put.mockResolvedValue({ code: 0, message: 'success' })
 
-    const {
-      getByText,
-      getByAltText,
-      getByTitle,
-      getByRole,
-      queryByText,
-    } = render(<Closet />)
+    const { getByText, getByAltText, getByTitle, getByRole, queryByText } =
+      render(<Closet />)
     await waitFor(() => expect(fetch.get).toBeCalled())
 
     fireEvent.click(getByAltText(fixtureSkin.pivot.item_name))
@@ -482,13 +477,8 @@ describe('apply textures to player', () => {
       .mockResolvedValueOnce([fixturePlayer])
     fetch.put.mockResolvedValue({ code: 1, message: 'failed' })
 
-    const {
-      getByText,
-      getByAltText,
-      getByTitle,
-      getByRole,
-      queryByText,
-    } = render(<Closet />)
+    const { getByText, getByAltText, getByTitle, getByRole, queryByText } =
+      render(<Closet />)
     await waitFor(() => expect(fetch.get).toBeCalled())
 
     fireEvent.click(getByAltText(fixtureSkin.pivot.item_name))
