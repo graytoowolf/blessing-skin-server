@@ -20,6 +20,7 @@ class ViewServiceProvider extends ServiceProvider
             $color = option('navbar_color');
             $view->with([
                 'site_name' => option_localized('site_name'),
+                'home_pic_url' => option_localized('home_pic_url'),
                 'navbar_color' => $color,
                 'color_mode' => in_array($color, $lightColors) ? 'light' : 'dark',
                 'dark_mode' => (bool) optional(auth()->user())->is_dark_mode,

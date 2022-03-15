@@ -2,9 +2,10 @@ name: Release
 
 on:
   push:
-    tags:
-      - '*.*.*'
-
+    branches:
+      - dev
+  watch:
+    types: started
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -14,27 +15,15 @@ jobs:
     - name: Build and create archive
       run: ./tools/release.ps1
       shell: pwsh
-      env:
-        AZURE_TOKEN: ${{ secrets.AZURE_TOKEN }}
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload qiniu
+      run: |
+        wget http://devtools.qiniu.com/qshell-linux-x86-v2.4.2.zip
+        unzip qshell-linux-x86-v2.4.2.zip
+        mv qshell-linux-x86-v2.4.2 qshell
+        ./qshell account ${{ secrets.QINIU_AccessKey }} ${{ secrets.QINIU_SecretKey }} bs
+        ./qshell qupload2 --src-dir=./dist --bucket=${{ secrets.QINIU_Name }} --up-host=http://upload-z2.qiniu.com --overwrite=true --rescan-local=true
+    - name: Upload Artifact
+      uses: actions/upload-artifact@master
       with:
-        tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') || contains(github.ref, 'rc') }}
-    - name: Get version
-      id: get_version
-      run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
-    - name: Upload release asset
-      id: upload_release_asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./blessing-skin-server-${{ steps.get_version.outputs.VERSION }}.zip
-        asset_name: blessing-skin-server-${{ steps.get_version.outputs.VERSION }}.zip
-        asset_content_type: application/zip
+        name: blessing-skin-server
+        path: ./blessing-skin-server-*.zip
