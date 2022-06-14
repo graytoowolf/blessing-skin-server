@@ -1,7 +1,7 @@
 $manifest = Invoke-WebRequest 'https://bs.mcpeau.com/update.json' | ConvertFrom-Json
 $last = $manifest.latest
 $version = (Get-Content package.json | ConvertFrom-Json).version
-$latest = $version + '-' + $env:GITHUB_RUN_NUMBER
+$latest = $version + '.' + $env:GITHUB_RUN_NUMBER
 Write-Host "version:$latest"
 
 (Get-Content -Path ./config/app.php) | ForEach-Object {$_ -Replace $version,$latest} | Set-Content -Path ./config/app.php
