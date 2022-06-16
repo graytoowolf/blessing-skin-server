@@ -90,6 +90,7 @@ const Row: React.FC<Props> = (props) => {
           </a>
         )}
       </td>
+      <td>{user.login_at}</td>
       <td>{user.register_at}</td>
       <td>
         <button

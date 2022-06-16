@@ -254,6 +254,7 @@ general:
     email: 邮箱
     nickname: 昵称
     score: 积分
+    login-at: 登录时间
     register-at: 注册时间
   player:
     owner: 拥有者

@@ -260,6 +260,7 @@ general:
     email: Email
     nickname: Nick Name
     score: Score
+    login-at: Log in time
     register-at: Registered At
   player:
     owner: Owner
