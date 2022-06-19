@@ -99,14 +99,6 @@ class AdminController extends Controller
             'title' => trans($plugin->title), 'version' => $plugin->version,
         ]);
 
-        if ($filesystem->exists(base_path('.git'))) {
-            $process = new \Symfony\Component\Process\Process(
-                ['git', 'log', '--pretty=%H', '-1']
-            );
-            $process->run();
-            $commit = $process->isSuccessful() ? trim($process->getOutput()) : '';
-        }
-
         $grid = [
             'layout' => [
                 ['md-6', 'md-6'],
@@ -127,7 +119,7 @@ class AdminController extends Controller
                     'version' => config('app.version'),
                     'env' => config('app.env'),
                     'debug' => config('app.debug') ? trans('general.yes') : trans('general.no'),
-                    'commit' => Str::limit($commit ?? '', 16, ''),
+                    'commit' => config('app.commit'),
                     'laravel' => app()->version(),
                 ],
                 'server' => [
