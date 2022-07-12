@@ -9,8 +9,7 @@ return [
     | Version of Blessing Skin Server.
     |
     */
-    'version' => '6.0.1',
-    'commit' => '1111111111111111',
+    'version' => '6.0.2',
 
     /*
     |--------------------------------------------------------------------------
@@ -20,6 +19,8 @@ return [
     | Where to get information of new versions.
     |
     */
+    'commit' => '1111111111111111',
+
     'update_source' => env(
         'UPDATE_SOURCE',
         'https://dev.azure.com/blessing-skin/51010f6d-9f99-40f1-a262-0a67f788df32/_apis/git/'.
