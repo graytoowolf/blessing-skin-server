@@ -1,4 +1,4 @@
-$manifest = Invoke-WebRequest 'https://bs.mcpeau.com/update.json' | ConvertFrom-Json
+$manifest = Invoke-WebRequest 'https://bs.mcpeau.com/server/update.json' | ConvertFrom-Json
 $last = $manifest.latest
 $version = (Get-Content package.json | ConvertFrom-Json).version
 $latest = $version + '.' + $env:GITHUB_RUN_NUMBER
@@ -20,9 +20,9 @@ Write-Host "Zip archive is created." -ForegroundColor Green
 
 
 
-New-Item dist -ItemType Directory
-Set-Location dist
-Copy-Item -Path "../$zip" -Destination $zip
+New-Item dist/server -ItemType Directory
+Set-Location dist/server
+Copy-Item -Path "../../$zip" -Destination $zip
 
 $manifest.latest = $latest
 $manifest.url = $manifest.url.Replace($last, $latest)
