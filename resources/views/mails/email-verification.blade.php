@@ -67,7 +67,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h2>欢迎加入 Minecraft Skin 皮肤站!</h2>
+            <h2>欢迎加入 {!! option_localized('site_name') !!} 皮肤站!</h2>
         </div>
         <div class="content">
             <h2>亲爱的用户您好</h2>
