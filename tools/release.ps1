@@ -19,13 +19,12 @@ zip -9 -r $zip app bootstrap config database plugins public resources/lang resou
 Write-Host "Zip archive is created." -ForegroundColor Green
 
 
-
 New-Item dist/server -ItemType Directory
 Set-Location dist/server
 Copy-Item -Path "../../$zip" -Destination $zip
 
 $manifest.latest = $latest
 $manifest.url = $manifest.url.Replace($last, $latest)
-$manifest.php = '8.0.2'
+$manifest.php = '8.1.0'
 ConvertTo-Json $manifest | Out-File -FilePath update.json
 Write-Host "Update source is prepared." -ForegroundColor Green
