@@ -138,7 +138,7 @@ class UserController extends Controller
         }
     }
 
-    public function sendVerificationEmail()
+    public function sendVerificationEmail(Dispatcher $dispatcher)
     {
         if (!option('require_verification')) {
             return json(trans('user.verification.disabled'), 1);
@@ -157,16 +157,19 @@ class UserController extends Controller
             return json(trans('user.verification.verified'), 1);
         }
 
+        $dispatcher->dispatch('user.verification.ready', [$user]);
+
         $url = URL::signedRoute('auth.verify', ['user' => $user], null, false);
 
         try {
             Mail::to($user->email)->send(new EmailVerification(url($url)));
         } catch (\Exception $e) {
             report($e);
+            $dispatcher->dispatch('user.verification.failed', [$user]);
 
             return json(trans('user.verification.failed', ['msg' => $e->getMessage()]), 2);
         }
-
+        $dispatcher->dispatch('user.verification.sent', [$user]);
         Session::put('last_mail_time', time());
 
         return json(trans('user.verification.success'), 0);
