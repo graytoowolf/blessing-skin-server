@@ -87,11 +87,15 @@ class MarketController extends Controller
                     'verify' => CaBundle::getSystemCaRootBundlePath(),
                 ])->get(trim($registry));
 
-                if ($response->ok()) {
-                    return $response->json()['packages'];
-                } else {
-                    throw new Exception(trans('admin.plugins.market.connection-error', ['error' => $response->status()]));
+                if ($response->successful())
+                {
+                    $responseData = $response->json();
+                    if ($responseData !== null && is_array($responseData) && array_key_exists('packages', $responseData))
+                    {
+                        return $responseData['packages'];
+                    }
                 }
+                throw new Exception(trans('admin.plugins.market.connection-error', ['error' => $response->status()]));
             })
             ->flatten(1);
 
