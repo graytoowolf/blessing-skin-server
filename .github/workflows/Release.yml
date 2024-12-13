@@ -12,6 +12,14 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: 8.2
+        coverage: none
+        extensions: mbstring, dom, fileinfo, sqlite, gd, zip
+
     - name: Build and create archive
       run: ./tools/release.ps1
       shell: pwsh
@@ -29,7 +37,7 @@ jobs:
     # 将目录上传到 S3
     - name: Sync to S3
       run: |
-        aws s3 cp ./qiniu/server s3://${{ secrets.AWS_S3_Name }}/server --recursive
+        aws s3 cp ./dist/server s3://${{ secrets.AWS_S3_Name }}/server --recursive
 
     - name: Upload Artifact
       uses: actions/upload-artifact@master

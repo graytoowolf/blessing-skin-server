@@ -25,6 +25,6 @@ Copy-Item -Path "../../$zip" -Destination $zip
 
 $manifest.latest = $latest
 $manifest.url = $manifest.url.Replace($last, $latest)
-$manifest.php = '8.1.0'
+$manifest.php = '8.2.0'
 ConvertTo-Json $manifest | Out-File -FilePath update.json
 Write-Host "Update source is prepared." -ForegroundColor Green
