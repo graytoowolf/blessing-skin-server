@@ -15,12 +15,22 @@ jobs:
     - name: Build and create archive
       run: ./tools/release.ps1
       shell: pwsh
-    - name: Upload qiniu
+
+# 设置 AWS 凭证
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+        # 设置 AWS 凭证过期时间，默认为 1 小时
+        expires-in: 3600
+
+    # 将目录上传到 S3
+    - name: Sync to S3
       run: |
-        wget https://devtools.qiniu.com/qshell-v2.9.0-linux-386.tar.gz?ref=developer.qiniu.com -O qshell.tar.gz
-        tar -zxvf qshell.tar.gz
-        ./qshell account ${{ secrets.QINIU_AccessKey }} ${{ secrets.QINIU_SecretKey }} bs
-        ./qshell qupload2 --src-dir=./dist --bucket=${{ secrets.QINIU_Name }} --up-host=http://upload-z2.qiniu.com --overwrite=true --rescan-local=true --check-hash=true
+        aws s3 cp ./qiniu/server s3://${{ secrets.AWS_S3_Name }}/server --recursive
+
     - name: Upload Artifact
       uses: actions/upload-artifact@master
       with:
