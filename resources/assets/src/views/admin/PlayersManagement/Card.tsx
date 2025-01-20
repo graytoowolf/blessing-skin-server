@@ -145,7 +145,7 @@ const Card: React.FC<Props> = (props) => {
           <div>
             <span className="mr-2">PID: {player.pid}</span>
             <span>
-              {t('general.player.owner')}: {player.uid}
+              {t('general.player.owner')}: {player.user?.email || player.uid}
             </span>
           </div>
           <div>

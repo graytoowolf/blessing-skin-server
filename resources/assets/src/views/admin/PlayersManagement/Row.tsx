@@ -27,7 +27,7 @@ const Row: React.FC<Props> = (props) => {
         </span>
       </td>
       <td>
-        {player.uid}
+        {player.user?.email || player.uid}
         <span className="ml-1">
           <ButtonEdit
             title={t('admin.changeOwner')}

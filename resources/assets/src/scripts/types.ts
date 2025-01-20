@@ -27,6 +27,10 @@ export type Player = {
   tid_skin: number
   tid_cape: number
   last_modified: string
+  user?: {
+    uid: number
+    email: string
+  }
 }
 
 export type Texture = {

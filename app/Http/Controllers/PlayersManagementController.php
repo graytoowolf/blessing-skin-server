@@ -38,7 +38,9 @@ class PlayersManagementController extends Controller
     {
         $query = $request->query('q');
 
-        return Player::usingSearchString($query)->paginate(10);
+        return Player::with('user:uid,email')
+            ->usingSearchString($query)
+            ->paginate(10);
     }
 
     public function name(
@@ -50,8 +52,8 @@ class PlayersManagementController extends Controller
             'player_name' => [
                 'required',
                 new Rules\PlayerName(),
-                'min:'.option('player_name_length_min'),
-                'max:'.option('player_name_length_max'),
+                'min:' . option('player_name_length_min'),
+                'max:' . option('player_name_length_max'),
                 'unique:players,name',
             ],
         ])['player_name'];
@@ -111,7 +113,7 @@ class PlayersManagementController extends Controller
             return json(trans('admin.players.textures.non-existent', ['tid' => $tid]), 1);
         }
 
-        $field = 'tid_'.$type;
+        $field = 'tid_' . $type;
         $previousTid = $player->$field;
         $player->$field = $tid;
         $player->save();
