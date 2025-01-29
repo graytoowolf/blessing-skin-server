@@ -148,6 +148,9 @@ class PluginManager
             Str::finish($plugin->namespace, '\\'),
             $plugin->getPath().'/src'
         );
+
+        // 确保主项目的自动加载器优先级更高
+        $this->loader->register(true); // prepend=true
     }
 
     /**
@@ -155,9 +158,20 @@ class PluginManager
      */
     protected function loadVendor(Plugin $plugin)
     {
-        $path = $plugin->getPath().'/vendor/autoload.php';
-        if ($this->filesystem->exists($path)) {
-            $this->filesystem->getRequire($path);
+        $mainVendorPath = base_path('vendor/autoload.php'); // 主项目的 vendor
+        $pluginVendorPath = $plugin->getPath().'/vendor/autoload.php';
+
+        // 优先加载主项目的依赖
+        if (file_exists($mainVendorPath)) {
+            $mainLoader = require $mainVendorPath;
+            // 将主项目的自动加载器设为更高优先级
+            $mainLoader->unregister();
+            $mainLoader->register(true); // prepend=true 提升优先级
+        }
+
+        // 兜底加载插件的依赖
+        if (file_exists($pluginVendorPath)) {
+            require $pluginVendorPath;
         }
     }
 
@@ -323,6 +337,14 @@ class PluginManager
     {
         return collect(Arr::get($plugin->getManifest(), 'require', []))
             ->mapWithKeys(function ($constraint, $name) {
+                            // 新增主项目依赖版本检查逻辑
+                if ($this->isMainProjectDependency($name)) {
+                    $mainVersion = $this->getMainProjectDependencyVersion($name);
+                    if (!$mainVersion || !Semver::satisfies($mainVersion, $constraint)) {
+                        return [$name => ['version' => $mainVersion, 'constraint' => $constraint]];
+                    }
+                    return [];
+                }
                 if ($name == 'blessing-skin-server') {
                     $version = config('app.version');
 
@@ -346,6 +368,24 @@ class PluginManager
                         : [];
                 }
             });
+    }
+
+    // 新增辅助方法：检查是否为已存在于主项目的依赖
+    protected function isMainProjectDependency(string $package): bool
+    {
+        return file_exists(base_path("vendor/$package"));
+    }
+
+    // 新增辅助方法：获取主项目依赖的版本
+    protected function getMainProjectDependencyVersion(string $package): ?string
+    {
+        $composerLock = json_decode(file_get_contents(base_path('composer.lock')), true);
+        foreach ($composerLock['packages'] as $pkg) {
+            if ($pkg['name'] === $package) {
+                return $pkg['version'];
+            }
+        }
+        return null;
     }
 
     public function getConflicts(Plugin $plugin): Collection
