@@ -9,8 +9,8 @@ use App\Models\User;
 use Blessing\Filter;
 use Blessing\Rejection;
 use Carbon\Carbon;
-use Event;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
@@ -489,12 +489,12 @@ class UserControllerTest extends TestCase
         // Administrator cannot be deleted
         $this->actingAs(User::factory()->admin()->create())
             ->postJson('/user/profile', [
-            'action' => 'delete',
-            'password' => '87654321',
-        ])->assertJson([
-            'code' => 1,
-            'message' => trans('user.profile.delete.admin'),
-        ]);
+                'action' => 'delete',
+                'password' => '87654321',
+            ])->assertJson([
+                'code' => 1,
+                'message' => trans('user.profile.delete.admin'),
+            ]);
     }
 
     public function testSetAvatar()

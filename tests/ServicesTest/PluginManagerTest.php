@@ -6,8 +6,8 @@ use App\Events;
 use App\Services\Option;
 use App\Services\Plugin;
 use App\Services\PluginManager;
-use Event;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Facades\Event;
 use ReflectionClass;
 
 class PluginManagerTest extends TestCase
@@ -425,7 +425,7 @@ class PluginManagerTest extends TestCase
                 ->with('/mayaka/callbacks.php')
                 ->once()
                 ->andReturn([
-                    \App\Events\PluginWasDeleted::class => function ($plugin) {
+                    Events\PluginWasDeleted::class => function ($plugin) {
                         $this->assertInstanceOf(Plugin::class, $plugin);
                         $this->assertEquals('mayaka', $plugin->name);
                     },
@@ -434,7 +434,7 @@ class PluginManagerTest extends TestCase
 
         app()->forgetInstance(PluginManager::class);
         resolve(PluginManager::class)->boot();
-        event(new \App\Events\PluginWasDeleted(new Plugin('/mayaka', ['name' => 'mayaka'])));
+        event(new Events\PluginWasDeleted(new Plugin('/mayaka', ['name' => 'mayaka'])));
     }
 
     public function testRegisterAutoload()

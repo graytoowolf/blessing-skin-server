@@ -11,6 +11,7 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Image;
 
 class SkinlibControllerTest extends TestCase
 {
@@ -303,6 +304,22 @@ class SkinlibControllerTest extends TestCase
             'type' => 'steve',
         ])->assertJsonValidationErrors('public');
 
+        // too wide texture
+        option(['max_texture_width' => 128]);
+        $this->postJson(route('texture.upload'), [
+            'name' => 'texture',
+            'file' => UploadedFile::fake()->image('wide.png', 256, 256),
+            'type' => 'steve',
+            'public' => true,
+        ])->assertJson([
+            'code' => 1,
+            'message' => trans('skinlib.upload.too-wide', [
+                'width' => 256,
+                'maxWidth' => 128,
+            ]),
+        ]);
+        option(['max_texture_width' => 8192]);
+
         // invalid skin size
         $this->postJson(route('texture.upload'), [
             'name' => 'texture',
@@ -437,7 +454,7 @@ class SkinlibControllerTest extends TestCase
             'uploaded_texture_hash',
             function ($hash, $file) use ($texture) {
                 $this->assertEquals($texture->hash, $hash);
-                $this->assertInstanceOf(UploadedFile::class, $file);
+                $this->assertInstanceOf(Image::class, $file);
 
                 return true;
             }
@@ -445,7 +462,7 @@ class SkinlibControllerTest extends TestCase
         Event::assertDispatched(
             'texture.uploading',
             function ($eventName, $payload) use ($texture) {
-                $this->assertInstanceOf(UploadedFile::class, $payload[0]);
+                $this->assertInstanceOf(Image::class, $payload[0]);
                 $this->assertEquals($texture->name, $payload[1]);
                 $this->assertEquals($texture->hash, $payload[2]);
 
@@ -456,7 +473,7 @@ class SkinlibControllerTest extends TestCase
             'texture.uploaded',
             function ($eventName, $payload) use ($texture) {
                 $this->assertTrue($texture->is($payload[0]));
-                $this->assertInstanceOf(UploadedFile::class, $payload[1]);
+                $this->assertInstanceOf(Image::class, $payload[1]);
 
                 return true;
             }
@@ -480,15 +497,15 @@ class SkinlibControllerTest extends TestCase
         $texture->uploader = $user->uid;
         $texture->save();
         $this->postJson(route('texture.upload'), [
-                'name' => 'texture',
-                'public' => true,
-                'type' => 'steve',
-                'file' => $upload,
-            ])->assertJson([
-                'code' => 2,
-                'message' => trans('skinlib.upload.repeated'),
-                'data' => ['tid' => $texture->tid],
-            ]);
+            'name' => 'texture',
+            'public' => true,
+            'type' => 'steve',
+            'file' => $upload,
+        ])->assertJson([
+            'code' => 2,
+            'message' => trans('skinlib.upload.repeated'),
+            'data' => ['tid' => $texture->tid],
+        ]);
 
         // rejected
         $filter->add('can_upload_texture', function ($can, $file, $name) {
@@ -498,11 +515,11 @@ class SkinlibControllerTest extends TestCase
             return new Rejection('rejected');
         });
         $this->postJson(route('texture.upload'), [
-                'name' => 'texture',
-                'public' => true,
-                'type' => 'steve',
-                'file' => $upload,
-            ])->assertJson(['code' => 1, 'message' => 'rejected']);
+            'name' => 'texture',
+            'public' => true,
+            'type' => 'steve',
+            'file' => $upload,
+        ])->assertJson(['code' => 1, 'message' => 'rejected']);
 
         $disk->delete($texture->hash);
     }

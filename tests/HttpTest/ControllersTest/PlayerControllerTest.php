@@ -7,8 +7,8 @@ use App\Models\Player;
 use App\Models\Texture;
 use App\Models\User;
 use Blessing\Rejection;
-use Event;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\Event;
 
 class PlayerControllerTest extends TestCase
 {
@@ -430,13 +430,13 @@ class PlayerControllerTest extends TestCase
 
         // success
         $this->deleteJson(route('user.player.clear', ['player' => $player]), [
-                'skin' => true,
-                'cape' => true,
-                'nope' => true, // invalid texture type is acceptable
-            ])->assertJson([
-                'code' => 0,
-                'message' => trans('user.player.clear.success', ['name' => $player->name]),
-            ]);
+            'skin' => true,
+            'cape' => true,
+            'nope' => true, // invalid texture type is acceptable
+        ])->assertJson([
+            'code' => 0,
+            'message' => trans('user.player.clear.success', ['name' => $player->name]),
+        ]);
         $this->assertEquals(0, Player::find($player->pid)->tid_skin);
         $this->assertEquals(0, Player::find($player->pid)->tid_cape);
         Event::assertDispatched(Events\PlayerProfileUpdated::class);

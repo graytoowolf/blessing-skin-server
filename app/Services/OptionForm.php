@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Services\Facades\Option;
 use BadMethodCallException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Option;
 use ReflectionClass;
 
 /**
@@ -203,7 +203,7 @@ class OptionForm
     /**
      * Handle the HTTP post request and update modified options.
      */
-    public function handle(callable $callback = null): self
+    public function handle(?callable $callback = null): self
     {
         $request = request();
         $allPostData = $request->all();
