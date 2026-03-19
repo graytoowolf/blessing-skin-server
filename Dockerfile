@@ -1,20 +1,13 @@
-FROM composer:latest as vendor
+FROM composer:latest AS vendor
 
 WORKDIR /app
 
 COPY composer.json composer.lock ./
 
-RUN composer install \
-    --prefer-dist \
-    --no-dev \
-    --no-suggest \
-    --no-progress \
-    --no-autoloader \
-    --no-scripts \
-    --no-interaction \
-    --ignore-platform-reqs
+RUN composer config --global audit.block-insecure false && \
+    composer update --prefer-dist --no-dev --no-suggest --no-progress --no-scripts --no-interaction --ignore-platform-reqs
 
-FROM node:alpine as frontend
+FROM node:alpine AS frontend
 
 WORKDIR /app
 
@@ -32,10 +25,10 @@ RUN yarn build && \
     # Strip unused files
     rm -rf *.config.js *.config.ts tsconfig.* \
       package.json yarn.lock node_modules/ \
-      resources/assets/ resources/lang resources/misc resources/misc/backgrounds/ \
+      resources/assets/ resources/lang resources/misc/backgrounds/ \
       tools/
 
-FROM composer:latest as builder
+FROM composer:latest AS builder
 
 WORKDIR /app
 
@@ -48,30 +41,27 @@ COPY --from=frontend /app/resources/views/assets ./resources/views/assets
 RUN composer dump-autoload -o --no-dev -n && \
     rm -rf *.config.js *.config.ts tsconfig.* \
       package.json yarn.lock node_modules/ \
-      resources/assets/ resources/misc resources/misc/backgrounds/ \
+      resources/assets/ resources/misc/backgrounds/ \
       tools/ && \
     mv .env.example .env && \
     php artisan key:generate && \
     mv .env storage/ && \
     ln -s storage/.env .env && \
-    touch storage/database.db && \
     mkdir storage/plugins && \
-    sed 's/PLUGINS_DIR=null/PLUGINS_DIR=\/app\/storage\/plugins/' -i storage/.env && \
-    sed 's/DB_CONNECTION=mysql/DB_CONNECTION=sqlite/' -i storage/.env && \
-    sed 's/DB_DATABASE=blessingskin/DB_DATABASE=\/app\/storage\/database\.db/' -i storage/.env
+    sed 's/PLUGINS_DIR=null/PLUGINS_DIR=\/app\/storage\/plugins/' -i storage/.env
 
-FROM php:8-apache
+FROM php:8.3-apache
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/
 
 RUN chmod +x /usr/local/bin/install-php-extensions && \
-    install-php-extensions gd zip
+    install-php-extensions gd zip imagick pdo_mysql
 
 WORKDIR /app
 
 COPY --from=builder /app ./
 
-ENV APACHE_DOCUMENT_ROOT /app/public
+ENV APACHE_DOCUMENT_ROOT=/app/public
 RUN chown -R www-data:www-data . && \
     sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf && \
     sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf && \
