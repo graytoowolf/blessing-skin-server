@@ -1,6 +1,6 @@
 # [Choice] PHP version (use -bullseye variants on local arm64/Apple Silicon): 8, 8.1, 8.2, 8.3, 8-bullseye, 8.1-bullseye, 8.2-bullseye, 8.3-bullseye, 8-buster, 8.1-buster, 8.2-buster, 8.3-buster
-ARG VARIANT=8.3-bullseye
-FROM mcr.microsoft.com/vscode/devcontainers/php:0-${VARIANT}
+ARG VARIANT=8.3-bookworm
+FROM mcr.microsoft.com/devcontainers/php:1-${VARIANT}
 
 # Fix GPG key issue for yarn repository and disable it
 RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 62D54FD4003F6525 || true \
