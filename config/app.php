@@ -137,6 +137,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Trusted Proxies
+    |--------------------------------------------------------------------------
+    |
+    | This value is an array of IP addresses that are trusted as proxies.
+    | Used by App\Services\ClientIP for IP address resolution.
+    | Supports both single IPs and CIDR notation (e.g., '192.168.1.1/24').
+    |
+    */
+
+    'trusted_proxies' => env('TRUSTED_PROXIES', []),
+
+    /*
+    |--------------------------------------------------------------------------
     | Encryption Key
     |--------------------------------------------------------------------------
     |

@@ -11,6 +11,8 @@ class Option
 {
     protected $items;
 
+    protected static $memoryCache = [];
+
     public function __construct(Filesystem $filesystem)
     {
         $cachePath = storage_path('options.php');
@@ -32,15 +34,54 @@ class Option
 
     public function get($key, $default = null, $raw = false)
     {
+        if (isset(self::$memoryCache[$key])) {
+            $value = self::$memoryCache[$key];
+            if ($raw) {
+                return $value;
+            }
+            return $this->normalizeValue($value);
+        }
+
         if (!$this->items->has($key) && Arr::has(config('options'), $key)) {
             $this->set($key, config("options.$key"));
         }
 
         $value = $this->items->get($key, $default);
+        self::$memoryCache[$key] = $value;
+
         if ($raw) {
             return $value;
         }
 
+        return $this->normalizeValue($value);
+    }
+
+    public function set($key, $value = null)
+    {
+        if (is_array($key)) {
+            foreach ($key as $k => $v) {
+                $this->set($k, $v);
+            }
+        } else {
+            $this->items->put($key, $value);
+            self::$memoryCache[$key] = $value;
+            try {
+                DB::table('options')->updateOrInsert(
+                    ['option_name' => $key],
+                    ['option_value' => $value]
+                );
+            } catch (QueryException $e) {
+            }
+        }
+    }
+
+    public function all(): array
+    {
+        return $this->items->all();
+    }
+
+    protected function normalizeValue($value)
+    {
         switch (strtolower($value)) {
             case 'true':
             case '(true)':
@@ -59,26 +100,8 @@ class Option
         }
     }
 
-    public function set($key, $value = null)
+    public static function clearMemoryCache(): void
     {
-        if (is_array($key)) {
-            foreach ($key as $k => $v) {
-                $this->set($k, $v);
-            }
-        } else {
-            $this->items->put($key, $value);
-            try {
-                DB::table('options')->updateOrInsert(
-                    ['option_name' => $key],
-                    ['option_value' => $value]
-                );
-            } catch (QueryException $e) {
-            }
-        }
-    }
-
-    public function all(): array
-    {
-        return $this->items->all();
+        self::$memoryCache = [];
     }
 }

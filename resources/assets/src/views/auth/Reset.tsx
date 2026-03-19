@@ -59,7 +59,7 @@ const Reset: React.FC = () => {
           minLength={8}
           maxLength={32}
           className="form-control"
-          placeholder={t('auth.password')}
+          placeholder={t('auth.password_placeholder')}
           value={password}
           onChange={handlePasswordChange}
         />

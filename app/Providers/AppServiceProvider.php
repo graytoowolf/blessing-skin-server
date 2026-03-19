@@ -15,6 +15,10 @@ class AppServiceProvider extends ServiceProvider
         $this->app->singleton('cipher', 'App\Services\Cipher\\'.config('secure.cipher'));
         $this->app->singleton(Services\Option::class);
         $this->app->alias(Services\Option::class, 'options');
+        $this->app->singleton(Services\ImageManagerService::class);
+        $this->app->bind(Services\ClientIP::class, function ($app) {
+            return new Services\ClientIP();
+        });
     }
 
     public function boot(Request $request): void

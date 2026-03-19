@@ -2,6 +2,7 @@ login:
   title: Log In
   message: Log in to manage your skin & players
   success: Logged in successfully.
+  locked: Your account is locked. Please try again after :minutes minutes.
 
 check:
   anonymous: Illegal access. Please log in first.
@@ -55,6 +56,8 @@ verify:
 validation:
   user: No such user.
   password: Wrong password.
+  password_too_short: Password must be at least 8 characters.
+  captcha: Invalid CAPTCHA.
 
 logout:
   success: You are now logged out.

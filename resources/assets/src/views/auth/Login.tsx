@@ -1,10 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { hot } from 'react-hot-loader/root'
-import useBlessingExtra from '@/scripts/hooks/useBlessingExtra'
 import useEmitMounted from '@/scripts/hooks/useEmitMounted'
 import { t } from '@/scripts/i18n'
 import * as fetch from '@/scripts/net'
-import { showModal } from '@/scripts/notify'
 import urls from '@/scripts/urls'
 import Alert from '@/components/Alert'
 import Captcha from '@/components/Captcha'
@@ -18,7 +16,7 @@ type SuccessfulResponse = {
 type FailedResponse = {
   code: number
   message: string
-  data: { login_fails: number }
+  data: { login_fails: number; locked?: boolean; locked_until?: number }
 }
 type Response = SuccessfulResponse | FailedResponse
 
@@ -32,17 +30,35 @@ const Login: React.FC = () => {
   const [identification, setIdentification] = useState('')
   const [password, setPassword] = useState('')
   const [remember, setRemember] = useState(false)
-  const [hasTooManyFails, setHasTooManyFails] = useState(false)
+  const [hasTooManyFails, setHasTooManyFails] = useState(
+    blessing.extra.tooManyFails as boolean
+  )
+  const [isLocked, setIsLocked] = useState(false)
+  const [lockedMinutes, setLockedMinutes] = useState(0)
   const [isPending, setIsPending] = useState(false)
   const [warningMessage, setWarningMessage] = useState('')
   const ref = useRef<Captcha | null>(null)
-  const recaptcha = useBlessingExtra<string>('recaptcha')
-  const invisibleRecaptcha = useBlessingExtra<boolean>('invisible')
 
   useEmitMounted()
 
   useEffect(() => {
-    setHasTooManyFails(blessing.extra.tooManyFails as boolean)
+    const lockedUntil = blessing.extra.locked_until as number | undefined
+    if (lockedUntil) {
+      const remaining = Math.ceil((lockedUntil - Date.now()) / 60000)
+      if (remaining > 0) {
+        setIsLocked(true)
+        setLockedMinutes(remaining)
+        const interval = setInterval(() => {
+          const newRemaining = Math.ceil((lockedUntil - Date.now()) / 60000)
+          if (newRemaining <= 0) {
+            setIsLocked(false)
+            clearInterval(interval)
+          } else {
+            setLockedMinutes(newRemaining)
+          }
+        }, 60000)
+      }
+    }
   }, [])
 
   const handlePasswordChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,11 +73,20 @@ const Login: React.FC = () => {
     event.preventDefault()
     setIsPending(true)
 
+    let captchaValue: string | undefined = undefined
+    if (hasTooManyFails) {
+      captchaValue = await ref.current!.execute()
+      if (!captchaValue) {
+        setIsPending(false)
+        return
+      }
+    }
+
     const response = await fetch.post<Response>(urls.auth.login(), {
       identification,
       password,
       keep: remember,
-      captcha: hasTooManyFails ? await ref.current!.execute() : undefined,
+      ...(captchaValue ? { captcha: captchaValue } : {}),
     })
 
     if (isSuccessfulResponse(response)) {
@@ -71,23 +96,14 @@ const Login: React.FC = () => {
       setIsPending(false)
       ref.current?.reset()
 
-      // only notify user if he/she fails too much at the first time
-      if (response.data.login_fails > 3 && !hasTooManyFails) {
+      if (response.data.locked && response.data.locked_until) {
+        setIsLocked(true)
+        const remaining = Math.ceil(
+          (response.data.locked_until - Date.now()) / 60000,
+        )
+        setLockedMinutes(remaining)
+      } else if (response.data.login_fails >= 3 && !hasTooManyFails) {
         setHasTooManyFails(true)
-        if (recaptcha) {
-          // no need to notify if using invisible recaptcha
-          if (!invisibleRecaptcha) {
-            showModal({
-              mode: 'alert',
-              text: t('auth.tooManyFails.recaptcha'),
-            })
-          }
-        } else {
-          showModal({
-            mode: 'alert',
-            text: t('auth.tooManyFails.captcha'),
-          })
-        }
       }
     }
   }
@@ -106,7 +122,7 @@ const Login: React.FC = () => {
         <input
           type="password"
           className="form-control"
-          placeholder={t('auth.password')}
+          placeholder={t('auth.password_placeholder')}
           autoComplete="current-password"
           value={password}
           onChange={handlePasswordChange}
@@ -119,7 +135,13 @@ const Login: React.FC = () => {
         </div>
       </div>
 
-      {hasTooManyFails && <Captcha ref={ref} />}
+      {isLocked && (
+        <Alert type="danger">
+          {t('auth.login.locked', { minutes: lockedMinutes })}
+        </Alert>
+      )}
+
+      {hasTooManyFails && !isLocked && <Captcha ref={ref} />}
 
       <Alert type="warning">{warningMessage}</Alert>
 
@@ -139,7 +161,7 @@ const Login: React.FC = () => {
       <button
         className="btn btn-primary btn-block"
         type="submit"
-        disabled={isPending}
+        disabled={isPending || isLocked}
       >
         {isPending ? (
           <>

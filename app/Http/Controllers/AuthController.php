@@ -42,6 +42,7 @@ class AuthController extends Controller
                 'tooManyFails' => cache(sha1('login_fails_'.$ip)) > 3,
                 'recaptcha' => option('recaptcha_sitekey'),
                 'invisible' => (bool) option('recaptcha_invisible'),
+                'locked_until' => cache(sha1('login_locked_'.$ip)) ? cache(sha1('login_fails_'.$ip).'_locked_until') * 1000 : null,
             ],
         ]);
     }
@@ -52,6 +53,20 @@ class AuthController extends Controller
         Dispatcher $dispatcher,
         Filter $filter,
     ) {
+        $whip = new Whip();
+        $ip = $whip->getValidIpAddress();
+        $ip = $filter->apply('client_ip', $ip);
+        $loginFailsCacheKey = sha1('login_fails_'.$ip);
+        $lockedKey = sha1('login_locked_'.$ip);
+
+        if (Cache::get($lockedKey)) {
+            $remain = Cache::get($loginFailsCacheKey.'_locked_until', 0) - time();
+            return json(trans('auth.login.locked', ['minutes' => ceil($remain / 60)]), 1, [
+                'locked' => true,
+                'locked_until' => Cache::get($loginFailsCacheKey.'_locked_until', time()) * 1000,
+            ]);
+        }
+
         $data = $request->validate([
             'identification' => 'required',
             'password' => 'required|min:6|max:32',
@@ -59,12 +74,29 @@ class AuthController extends Controller
         $identification = $data['identification'];
         $password = $data['password'];
 
+        $loginFails = (int) Cache::get($loginFailsCacheKey, 0);
+
+        if ($loginFails >= 3) {
+            try {
+                $request->validate(['captcha' => ['required', $captcha]]);
+            } catch (\Illuminate\Validation\ValidationException $e) {
+                $loginFails++;
+                Cache::put($loginFailsCacheKey, $loginFails, 3600);
+                $errors = $e->validator->errors();
+                $captchaError = option('recaptcha_sitekey')
+                    ? $errors->first('captcha')
+                    : trans('auth.validation.captcha');
+                return json($captchaError, 1, [
+                    'login_fails' => $loginFails,
+                ]);
+            }
+        }
+
         $can = $filter->apply('can_login', null, [$identification, $password]);
         if ($can instanceof Rejection) {
             return json($can->getReason(), 1);
         }
 
-        // Guess type of identification
         $authType = filter_var($identification, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
 
         $dispatcher->dispatch('auth.login.attempt', [$identification, $password, $authType]);
@@ -77,17 +109,6 @@ class AuthController extends Controller
             $user = optional($player)->user;
         }
 
-        // Require CAPTCHA if user fails to login more than 3 times
-        $whip = new Whip();
-        $ip = $whip->getValidIpAddress();
-        $ip = $filter->apply('client_ip', $ip);
-        $loginFailsCacheKey = sha1('login_fails_'.$ip);
-        $loginFails = (int) Cache::get($loginFailsCacheKey, 0);
-
-        if ($loginFails > 3) {
-            $request->validate(['captcha' => ['required', $captcha]]);
-        }
-
         if (!$user) {
             return json(trans('auth.validation.user'), 2);
         }
@@ -97,6 +118,7 @@ class AuthController extends Controller
         if ($user->verifyPassword($request->input('password'))) {
             Session::forget('login_fails');
             Cache::forget($loginFailsCacheKey);
+            Cache::forget($lockedKey);
 
             Auth::login($user, $request->input('keep'));
 
@@ -108,6 +130,19 @@ class AuthController extends Controller
             ]);
         } else {
             $loginFails++;
+            $lockoutTime = option('login_lockout_time', 1800);
+            $maxFails = option('login_max_fails', 10);
+
+            if ($loginFails >= $maxFails) {
+                Cache::put($lockedKey, true, $lockoutTime);
+                Cache::put($loginFailsCacheKey.'_locked_until', time() + $lockoutTime, $lockoutTime);
+                Cache::put($loginFailsCacheKey, $loginFails, $lockoutTime);
+                return json(trans('auth.login.locked', ['minutes' => ceil($lockoutTime / 60)]), 1, [
+                    'locked' => true,
+                    'locked_until' => (time() + $lockoutTime) * 1000,
+                ]);
+            }
+
             Cache::put($loginFailsCacheKey, $loginFails, 3600);
             $dispatcher->dispatch('auth.login.failed', [$user, $loginFails]);
 
@@ -170,7 +205,9 @@ class AuthController extends Controller
             'email' => 'required|email|unique:users',
             'password' => 'required|min:8|max:32',
             'captcha' => ['required', $captcha],
-        ], $rule));
+        ], $rule), [
+            'password.min' => trans('auth.validation.password_too_short'),
+        ]);
         $playerName = $request->input('player_name');
 
         $dispatcher->dispatch('auth.registration.attempt', [$data]);

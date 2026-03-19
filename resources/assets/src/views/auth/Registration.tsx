@@ -10,6 +10,58 @@ import Alert from '@/components/Alert'
 import Captcha from '@/components/Captcha'
 import EmailSuggestion from '@/components/EmailSuggestion'
 
+interface PasswordRequirement {
+  test: (password: string) => boolean
+  label: string
+}
+
+const passwordRequirements: PasswordRequirement[] = [
+  { test: (p) => p.length >= 8, label: 'auth.password.length' },
+]
+
+const getPasswordStrength = (password: string): number => {
+  return passwordRequirements.filter((req) => req.test(password)).length
+}
+
+const PasswordStrengthIndicator: React.FC<{ password: string }> = ({
+  password,
+}) => {
+  const strength = getPasswordStrength(password)
+  const percentage = (strength / passwordRequirements.length) * 100
+
+  const getColor = () => {
+    if (percentage <= 20) return 'bg-danger'
+    if (percentage <= 40) return 'bg-danger'
+    if (percentage <= 60) return 'bg-warning'
+    if (percentage <= 80) return 'bg-info'
+    return 'bg-success'
+  }
+
+  return (
+    <div className="mt-1 mb-3">
+      <div className="progress" style={{ height: '4px' }}>
+        <div
+          className={`progress-bar ${getColor()}`}
+          style={{ width: `${percentage}%` }}
+        />
+      </div>
+      <div className="mt-1" style={{ fontSize: '0.75rem' }}>
+        {passwordRequirements.map((req, index) => (
+          <div
+            key={index}
+            className={req.test(password) ? 'text-success' : 'text-muted'}
+          >
+            <i
+              className={`fas fa-${req.test(password) ? 'check' : 'times'} mr-1`}
+            />
+            {t(req.label)}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 const Registration: React.FC = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -18,6 +70,7 @@ const Registration: React.FC = () => {
   const [playerName, setPlayerName] = useState('')
   const [isPending, setIsPending] = useState(false)
   const [warningMessage, setWarningMessage] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const requirePlayer = useBlessingExtra<boolean>('player')
   const confirmationRef = useRef<HTMLInputElement | null>(null)
   const captchaRef = useRef<Captcha | null>(null)
@@ -86,22 +139,31 @@ const Registration: React.FC = () => {
       />
       <div className="input-group mb-3">
         <input
-          type="password"
+          type={showPassword ? 'text' : 'password'}
           required
           minLength={8}
           maxLength={32}
           className="form-control"
-          placeholder={t('auth.password')}
+          placeholder={t('auth.password_placeholder')}
           autoComplete="new-password"
           value={password}
           onChange={handlePasswordChange}
         />
         <div className="input-group-append">
+          <button
+            className="btn btn-outline-secondary"
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            title={showPassword ? t('auth.password.hidePassword') : t('auth.password.showPassword')}
+          >
+            <i className={`fas fa-${showPassword ? 'eye-slash' : 'eye'}`} />
+          </button>
           <div className="input-group-text">
             <i className="fas fa-lock"></i>
           </div>
         </div>
       </div>
+      <PasswordStrengthIndicator password={password} />
       <div className="input-group mb-3">
         <input
           type="password"

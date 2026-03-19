@@ -7,7 +7,7 @@ auth:
   emptyEmail: Empty email address.
   invalidConfirmPwd: Confirming password is not equal with password.
   emptyNickname: Empty nickname.
-  register: Register
+  register.title: Register
   registering: Registering
   send: Send
   sending: Sending
@@ -17,7 +17,7 @@ auth:
   player-name: Minecraft player name
   email: Email
   identification: Email or player name
-  password: Password
+  password_placeholder: Password
   captcha: CAPTCHA
   change-captcha: Click to change CAPTCHA image.
   login-link: Already registered? Log in here.
@@ -28,6 +28,17 @@ auth:
   player-name-intro: Player name in Minecraft, can be changed later
   forgot:
     login-link: I do remember it
+  locked: Your account is locked. Please try again after :minutes minutes.
+  success: Success
+  logout:
+    success: You have been logged out successfully.
+  register:
+    success: Registration successful. Redirecting...
+  email-label: Email Address
+  password:
+    showPassword: Show password
+    hidePassword: Hide password
+    length: At least 8 characters
 
 skinlib:
   private: Private

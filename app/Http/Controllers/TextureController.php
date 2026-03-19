@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Player;
 use App\Models\Texture;
 use App\Models\User;
+use App\Services\ImageManagerService;
 use Blessing\Minecraft;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -14,8 +15,12 @@ use Intervention\Image\Facades\Image;
 
 class TextureController extends Controller
 {
-    public function __construct()
+    protected $imageManager;
+
+    public function __construct(ImageManagerService $imageManager)
     {
+        $this->imageManager = $imageManager;
+
         $this->middleware('cache.headers:public;max_age='.option('cache_expire_time'))
             ->only(['json']);
 
@@ -71,8 +76,7 @@ class TextureController extends Controller
 
                 $lastModified = $disk->lastModified($hash);
 
-                // TODO: refactor
-                return \Intervention\Image\ImageManagerStatic::configure(['driver' => 'gd'])->make($image)
+                return $this->imageManager->make($image)
                     ->response($usePNG ? 'png' : 'webp', 100)
                     ->setLastModified(Carbon::createFromTimestamp($lastModified));
             }
@@ -146,8 +150,7 @@ class TextureController extends Controller
 
         $disk = Storage::disk('textures');
         if (is_null($texture) || $disk->missing($texture->hash)) {
-            // TODO: refactor
-            return \Intervention\Image\ImageManagerStatic::configure(['driver' => 'gd'])->make(resource_path("misc/textures/avatar$mode.png"))
+            return $this->imageManager->make(resource_path("misc/textures/avatar$mode.png"))
                 ->resize($size, $size)
                 ->response($usePNG ? 'png' : 'webp', 100);
         }
@@ -167,8 +170,7 @@ class TextureController extends Controller
 
                 $lastModified = Carbon::createFromTimestamp($disk->lastModified($hash));
 
-                // TODO: refactor
-                return \Intervention\Image\ImageManagerStatic::configure(['driver' => 'gd'])->make($image)
+                return $this->imageManager->make($image)
                     ->resize($size, $size)
                     ->response($usePNG ? 'png' : 'webp', 100)
                     ->setLastModified($lastModified);

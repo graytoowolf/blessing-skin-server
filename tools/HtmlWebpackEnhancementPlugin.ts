@@ -43,21 +43,16 @@ class HtmlWebpackEnhancementPlugin {
         hooks.afterTemplateExecution.tap(
           'HtmlWebpackEnhancementPlugin',
           (data) => {
-            if (
-              compilation.compiler.options.mode === 'production' &&
-              data.headTags.length > 0
-            ) {
-              if (
-                data.headTags.some((tag) => tag.attributes.rel === 'stylesheet')
-              ) {
-                data.bodyTags = data.headTags.filter(
-                  (tag) => tag.tagName !== 'script',
-                )
-              } else {
-                data.bodyTags = data.headTags
-              }
+            if (compilation.compiler.options.mode === 'production') {
+              const styles = data.headTags.filter(
+                (tag) => tag.tagName === 'link' && tag.attributes.rel === 'stylesheet'
+              );
+              const scripts = data.headTags.filter(
+                (tag) => tag.tagName === 'script'
+              );
 
-              data.headTags = []
+              data.headTags = styles;
+              data.bodyTags = [...data.bodyTags, ...scripts];
             }
 
             return data

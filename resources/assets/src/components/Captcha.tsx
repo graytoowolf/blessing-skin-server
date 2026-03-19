@@ -29,18 +29,28 @@ class Captcha extends React.Component<Record<string, unknown>, State> {
     this.ref = React.createRef()
   }
 
-  execute = async () => {
-    const recaptcha = this.ref.current
-    if (recaptcha && this.state.invisible) {
-      return new Promise<string>((resolve) => {
-        const off = on(eventId, (value: string) => {
-          resolve(value)
-          off()
-        })
-        recaptcha.execute()
-      })
+  execute = async (): Promise<string> => {
+    if (!this.state.invisible) {
+      return this.state.value
     }
-    return this.state.value
+
+    const recaptcha = this.ref.current
+    if (!recaptcha) {
+      return ''
+    }
+
+    return new Promise<string>((resolve) => {
+      const off = on(eventId, (value: string) => {
+        resolve(value)
+        off()
+      })
+      recaptcha.execute()
+
+      setTimeout(() => {
+        off()
+        resolve('')
+      }, 10000)
+    })
   }
 
   reset = () => {
