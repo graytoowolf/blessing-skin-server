@@ -27,3 +27,6 @@ storage/options.php
 resources/views/overrides
 .DS_Store
 */.DS_Store
+docs
+.cursorrules
+.trae

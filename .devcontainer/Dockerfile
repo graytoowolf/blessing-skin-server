@@ -7,13 +7,15 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 62D54FD4003F6525 ||
     && rm -f /etc/apt/sources.list.d/yarn.list \
     || true
 
-# Install MariaDB client
+# Install MariaDB client and ImageMagick for imagick extension
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
-    && apt-get install -y mariadb-client zlib1g-dev libpng-dev libzip-dev libwebp-dev \
+    && apt-get install -y mariadb-client zlib1g-dev libpng-dev libzip-dev libwebp-dev libmagickwand-dev \
     && apt-get clean -y && rm -rf /var/lib/apt/lists/*
 
-# Install php-mysql driver
-RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip
+# Install php-mysql driver and imagick extension
+RUN docker-php-ext-install mysqli pdo pdo_mysql gd zip \
+    && pecl install imagick \
+    && docker-php-ext-enable imagick
 
 # [Choice] Node.js version: none, lts/*, 16, 14, 12, 10
 ARG NODE_VERSION="none"
