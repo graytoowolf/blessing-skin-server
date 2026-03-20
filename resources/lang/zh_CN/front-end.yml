@@ -12,7 +12,6 @@ auth:
   emptyEmail: 你还没有填写邮箱哦
   emptyNickname: 你还没有填写昵称哦
   invalidConfirmPwd: 密码和确认的密码不一样诶？
-  register.title: 注册
   registering: 注册中
   send: 发送
   sending: 发送中
@@ -34,7 +33,9 @@ auth:
   logout:
     success: 已成功登出
   register:
+    title: 注册
     success: 注册成功，正在跳转...
+    registerBtn: 注册
   email-label: 电子邮箱
   password:
     showPassword: 显示密码

@@ -33,7 +33,7 @@ return [
     */
     'registry' => env(
         'PLUGINS_REGISTRY',
-        'https://bs-plugins.littleservice.cn/registry_{lang}.json'
+        'https://bs.mcpeau.com/plugins/registry_{lang}.json'
     ),
 
     /*

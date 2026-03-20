@@ -7,7 +7,6 @@ auth:
   emptyEmail: Empty email address.
   invalidConfirmPwd: Confirming password is not equal with password.
   emptyNickname: Empty nickname.
-  register.title: Register
   registering: Registering
   send: Send
   sending: Sending
@@ -33,7 +32,9 @@ auth:
   logout:
     success: You have been logged out successfully.
   register:
+    title: Register
     success: Registration successful. Redirecting...
+    registerBtn: Register
   email-label: Email Address
   password:
     showPassword: Show password
