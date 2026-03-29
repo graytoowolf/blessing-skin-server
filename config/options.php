@@ -8,7 +8,7 @@ return [
     'require_verification' => 'false',
     'regs_per_ip' => '3',
     'announcement' => 'Welcome to Blessing Skin {version}!',
-    'home_pic_url' => './app/bg.webp',
+    'home_pic_url' => '/app/bg.webp',
     'custom_css' => '',
     'custom_js' => '',
     'player_name_rule' => 'official',
