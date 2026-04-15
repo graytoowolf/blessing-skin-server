@@ -1,5 +1,5 @@
 export type App = {
-  id: number
+  id: string
   name: string
   secret: string
   redirect: string

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\OAuthClient;
 use App\Models\Scope;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Cache;
@@ -58,5 +59,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan(array_merge($defaultScopes, $scopes));
 
         Passport::setDefaultScope(['User.Read']);
+
+        Passport::useClientModel(OAuthClient::class);
     }
 }
