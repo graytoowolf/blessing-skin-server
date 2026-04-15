@@ -19,19 +19,10 @@ class OAuthClient extends PassportClient
     public static function generateSecureClientId(): string
     {
         do {
-            $id = static::generateRandomId();
+            $id = (string) Str::uuid();
         } while (static::idExists($id));
 
         return $id;
-    }
-
-    protected static function generateRandomId(): string
-    {
-        $prefix = 'client_';
-        $randomBytes = random_bytes(24);
-        $randomString = bin2hex($randomBytes);
-
-        return $prefix . $randomString;
     }
 
     protected static function idExists(string $id): bool

@@ -15,8 +15,7 @@ class OAuthClientTest extends TestCase
         $id = OAuthClient::generateSecureClientId();
 
         $this->assertIsString($id);
-        $this->assertStringStartsWith('client_', $id);
-        $this->assertGreaterThanOrEqual(32, strlen($id));
+        $this->assertEquals(36, strlen($id));
     }
 
     public function testGenerateSecureClientIdUniqueness()
@@ -34,7 +33,7 @@ class OAuthClientTest extends TestCase
     {
         $id = OAuthClient::generateSecureClientId();
 
-        $this->assertMatchesRegularExpression('/^client_[a-f0-9]{48}$/', $id);
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $id);
     }
 
     public function testClientModelUsesNonIncrementingKey()
@@ -58,15 +57,8 @@ class OAuthClientTest extends TestCase
         ]);
 
         $this->assertNotNull($client->id);
-        $this->assertStringStartsWith('client_', $client->id);
-        $this->assertGreaterThanOrEqual(32, strlen($client->id));
-    }
-
-    public function testClientIdLength()
-    {
-        $id = OAuthClient::generateSecureClientId();
-
-        $this->assertEquals(55, strlen($id));
+        $this->assertEquals(36, strlen($client->id));
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $client->id);
     }
 
     public function testMultipleClientsHaveDifferentIds()

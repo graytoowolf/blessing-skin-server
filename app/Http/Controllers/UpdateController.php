@@ -42,7 +42,7 @@ class UpdateController extends Controller
         $response = Http::withOptions([
             'sink' => $path,
             'verify' => CaBundle::getSystemCaRootBundlePath(),
-        ])->get($info['url']);
+        ])->timeout(300)->get($info['url']);
 
         if ($response->ok()) {
             $unzip->extract($path, base_path());

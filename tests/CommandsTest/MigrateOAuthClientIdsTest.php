@@ -40,12 +40,13 @@ class MigrateOAuthClientIdsTest extends TestCase
             ->assertSuccessful();
 
         $client = DB::table('oauth_clients')->first();
-        $this->assertStringStartsWith('client_', $client->id);
+        $this->assertEquals(36, strlen($client->id));
+        $this->assertMatchesRegularExpression('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $client->id);
     }
 
     public function testCommandSkipsAlreadyMigratedClients()
     {
-        $migratedId = 'client_'.bin2hex(random_bytes(24));
+        $migratedId = 'b1d72203-d142-4d7e-929a-aae9c27b2c7b';
 
         DB::table('oauth_clients')->insert([
             'id' => $migratedId,

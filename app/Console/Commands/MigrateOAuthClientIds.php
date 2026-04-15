@@ -10,7 +10,7 @@ class MigrateOAuthClientIds extends Command
 {
     protected $signature = 'oauth:migrate-client-ids';
 
-    protected $description = 'Migrate existing OAuth client IDs from auto-increment to secure random IDs';
+    protected $description = 'Migrate existing OAuth client IDs from auto-increment to secure UUID format';
 
     public function handle(): int
     {
@@ -34,7 +34,7 @@ class MigrateOAuthClientIds extends Command
             foreach ($clients as $client) {
                 $oldId = $client->id;
 
-                if (str_starts_with($oldId, 'client_')) {
+                if ($this->isValidUuid((string) $oldId)) {
                     $this->info("Client ID {$oldId} already migrated. Skipping.");
 
                     continue;
@@ -79,5 +79,10 @@ class MigrateOAuthClientIds extends Command
 
             return self::FAILURE;
         }
+    }
+
+    protected function isValidUuid(string $id): bool
+    {
+        return preg_match('/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i', $id) === 1;
     }
 }
