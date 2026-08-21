@@ -34,6 +34,12 @@ export default function (env?: Env): webpack.Configuration {
       ],
       home: '@/scripts/homePage.ts',
       'home-css': '@/styles/home.css',
+      'mc-css': '@/styles/mc-theme.css',
+      'show-css': '@/styles/skinlib-show.css',
+      'auth-css': '@/styles/auth.css',
+      'user-css': '@/styles/user.css',
+      bg: '@/images/bg.webp',
+      favicon: '@/images/favicon.ico',
       spectre: [
         'spectre.css/dist/spectre.min.css',
         '@/fonts/minecraft.css',
@@ -71,6 +77,15 @@ export default function (env?: Env): webpack.Configuration {
           ],
         },
         {
+          // 站点静态资源（首页背景图 / 图标）— 以稳定文件名输出，
+          // 供 home_pic_url / favicon 选项直接引用（替代已移除的 scripts/build.ps1 复制逻辑）
+          test: /images\/(bg\.webp|favicon\.ico)$/,
+          type: 'asset/resource',
+          generator: {
+            filename: '[name][ext]',
+          },
+        },
+        {
           test: /\.(png|webp|svg|woff2?|eot|ttf)$/,
           type: 'asset',
         },
@@ -105,6 +120,30 @@ export default function (env?: Env): webpack.Configuration {
         templateContent: '',
         chunks: ['home-css'],
         filename: 'home-css.twig',
+        publicPath: htmlPublicPath,
+      }),
+      new HtmlWebpackPlugin({
+        templateContent: '',
+        chunks: ['mc-css'],
+        filename: 'mc-css.twig',
+        publicPath: htmlPublicPath,
+      }),
+      new HtmlWebpackPlugin({
+        templateContent: '',
+        chunks: ['show-css'],
+        filename: 'show-css.twig',
+        publicPath: htmlPublicPath,
+      }),
+      new HtmlWebpackPlugin({
+        templateContent: '',
+        chunks: ['auth-css'],
+        filename: 'auth-css.twig',
+        publicPath: htmlPublicPath,
+      }),
+      new HtmlWebpackPlugin({
+        templateContent: '',
+        chunks: ['user-css'],
+        filename: 'user-css.twig',
         publicPath: htmlPublicPath,
       }),
       new HtmlWebpackPlugin({

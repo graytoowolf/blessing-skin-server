@@ -14,6 +14,7 @@
       }
     </style>
     {{ include('assets.home-css', ignore_missing = true) }}
+    {{ include('assets.mc-css', ignore_missing = true) }}
   </head>
 
   <body class="hold-transition layout-top-nav">
@@ -22,7 +23,16 @@
         <div id="fixed-bg" style="background-image: url('{{ home_pic_url }}')"></div>
       {% endif %}
 
-      <nav class="navbar navbar-expand fixed-top navbar-{{ navbar_color }} navbar-{{ color_mode }}
+      <!-- Ambient blobs -->
+      <div class="blob blob-1" aria-hidden="true"></div>
+      <div class="blob blob-2" aria-hidden="true"></div>
+      <div class="blob blob-3" aria-hidden="true"></div>
+
+      <!-- Scan line -->
+      <div class="scan-line" aria-hidden="true"></div>
+
+      <!-- Navbar -->
+      <nav id="home-navbar" class="mc-navbar navbar navbar-expand fixed-top navbar-{{ navbar_color }} navbar-{{ color_mode }}
         ml-0 {{ transparent_navbar ? 'transparent' }}"
       >
         <div class="container">
@@ -31,9 +41,12 @@
           </div>
 
           <div class="navbar-custom-menu">
-            <ul class="nav navbar-nav">
+            <ul class="nav navbar-nav" style="gap: 4px;">
               <li class="nav-item">
-                <a class="nav-link" href="{{ url('skinlib') }}">{{ trans('general.skinlib') }}</a>
+                <a class="nav-link" href="{{ url('skinlib') }}">
+                  <i class="fas fa-palette mr-1" style="font-size:0.85em;"></i>
+                  {{ trans('general.skinlib') }}
+                </a>
               </li>
 
               {{ include('shared.languages') }}
@@ -42,8 +55,8 @@
                 {{ include('shared.user-menu') }}
               {% else %}
                 <li class="nav-item">
-                  <a class="nav-link" href="{{ url('auth/login') }}">
-                    <i class="icon fas fa-sign-in-alt"></i>
+                  <a class="nav-link" href="{{ url('auth/login') }}" style="color: rgba(241,245,249,0.7);">
+                    <i class="icon fas fa-sign-in-alt mr-1"></i>
                     {{ trans('general.login') }}
                   </a>
                 </li>
@@ -53,25 +66,55 @@
         </div>
       </nav>
 
+      <!-- Hero Content -->
       <div class="container">
         <div class="splash">
+          <!-- Eyebrow badge -->
+          <div class="splash-badge">
+            <span class="splash-badge-dot"></span>
+            Minecraft Skin Platform
+          </div>
+
+          <!-- Main title -->
           <h1 class="splash-head">{{ site_name }}</h1>
+
+          <!-- Subtitle -->
           <p class="splash-subhead">
             {{ site_description }}
           </p>
-          <p>
+
+          <!-- CTA Buttons -->
+          <div class="splash-buttons">
             {% if auth_check() %}
-              <a href="{{ url('user') }}" class="main-button">
-                {{ trans('general.user-center') }}
+              <a href="{{ url('user') }}" class="main-button primary">
+                <i class="fas fa-th-large" style="position:relative;z-index:1;"></i>
+                <span style="position:relative;z-index:1;">{{ trans('general.user-center') }}</span>
+              </a>
+              <a href="{{ url('skinlib') }}" class="main-button ghost">
+                <i class="fas fa-palette"></i>
+                {{ trans('general.skinlib') }}
               </a>
             {% else %}
-              <a href="{{ url('auth/register') }}" class="main-button">
-                {{ trans('general.register') }}
+              <a href="{{ url('auth/register') }}" class="main-button primary">
+                <i class="fas fa-rocket" style="position:relative;z-index:1;"></i>
+                <span style="position:relative;z-index:1;">{{ trans('general.register') }}</span>
+              </a>
+              <a href="{{ url('auth/login') }}" class="main-button ghost">
+                <i class="fas fa-sign-in-alt"></i>
+                {{ trans('general.login') }}
               </a>
             {% endif %}
-          </p>
+          </div>
         </div>
       </div>
+
+      <!-- Scroll Indicator -->
+      {% if not hide_intro %}
+        <div class="scroll-indicator" aria-hidden="true">
+          <div class="scroll-indicator-line"></div>
+          <span>Scroll</span>
+        </div>
+      {% endif %}
 
       {% if hide_intro %}
         <div id="copyright" class="without-intro">
@@ -83,42 +126,52 @@
     </div>
 
     {% if not hide_intro %}
+      <!-- Features Section -->
       <div id="intro">
         <div class="container">
-          <div class="text-center">
-            <h1>{{ trans('index.features.title') }}</h1>
-            <br>
-            <br>
-            <div class="container-lg">
-              <div class="row">
-                {% for item in ['first', 'second', 'third'] %}
-                  <div class="col-lg">
-                    <i class="fas {{ trans("index.features.#{item}.icon") }} mb-3" aria-hidden="true"></i>
+          <div class="text-center mb-5">
+            <span class="section-eyebrow">Why Choose Us</span>
+            <h1 class="section-title">{{ trans('index.features.title') }}</h1>
+            <p class="section-desc">
+              为 Minecraft 玩家提供最流畅的皮肤管理体验
+            </p>
+          </div>
+          <div class="container-lg">
+            <div class="row" style="gap: 0 0; row-gap: 1.5rem;">
+              {% for item in ['first', 'second', 'third'] %}
+                <div class="col-lg" style="padding: 0 12px;">
+                  <div class="feature-card">
+                    <div class="feature-card-icon {{ loop.index == 1 ? 'purple' : (loop.index == 2 ? 'cyan' : 'violet') }}">
+                      <i class="fas {{ trans("index.features.#{item}.icon") }}" aria-hidden="true"></i>
+                    </div>
                     <h3>{{ trans("index.features.#{item}.name") }}</h3>
                     <p>{{ trans("index.features.#{item}.desc")|raw }}</p>
                   </div>
-                {% endfor %}
-              </div>
+                </div>
+              {% endfor %}
             </div>
           </div>
-          <br>
         </div>
       </div>
+
+      <!-- CTA Footer Section -->
       <div id="footer-wrap">
         <div class="container">
-          <div class="row">
-            <div class="col-lg-6 mb-2">
-              {{ trans('index.introduction', {sitename: site_name}) }}
+          <div class="row align-items-center">
+            <div class="col-lg-7 mb-4 mb-lg-0">
+              <h2 class="footer-cta-title">{{ trans('index.introduction', {sitename: site_name}) }}</h2>
             </div>
-            <div class="col-lg-4"></div>
-            <div class="col-lg-2 d-flex justify-content-center align-items-center">
-              <a href="{{ url('auth/register') }}" class="main-button">
-                {{ trans('index.start') }}
+            <div class="col-lg-1"></div>
+            <div class="col-lg-4 d-flex justify-content-center justify-content-lg-end">
+              <a href="{{ url('auth/register') }}" class="main-button primary" style="font-size:1.05rem; padding: 0.9em 2.4em;">
+                <i class="fas fa-arrow-right" style="position:relative;z-index:1;"></i>
+                <span style="position:relative;z-index:1;">{{ trans('index.start') }}</span>
               </a>
             </div>
           </div>
         </div>
       </div>
+
       <div id="copyright" class="with-intro">
         <div class="container">
           {{ include('shared.copyright') }}
@@ -129,6 +182,28 @@
     <script type="application/json" id="blessing-extra">
       {{ {transparent_navbar: transparent_navbar}|json_encode|raw }}
     </script>
+
+    <!-- Navbar scroll effect -->
+    <script>
+      (function() {
+        var navbar = document.getElementById('home-navbar');
+        if (!navbar) return;
+        function onScroll() {
+          if (window.scrollY > 60) {
+            navbar.classList.add('scrolled');
+            navbar.classList.remove('transparent');
+          } else {
+            navbar.classList.remove('scrolled');
+            {% if transparent_navbar %}
+              navbar.classList.add('transparent');
+            {% endif %}
+          }
+        }
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+      })();
+    </script>
+
     {{ include('assets.home', ignore_missing = true) }}
     {{ include('shared.foot') }}
   </body>

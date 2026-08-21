@@ -2,6 +2,7 @@
 <html lang="{{ locale }}">
   <head>
     {{ include('shared.head') }}
+    {{ include('assets.auth-css', ignore_missing = true) }}
     <title>{% block title %}{% endblock %} - {{ site_name }}</title>
     <style>
       .login-page {
@@ -9,9 +10,6 @@
 		    background-size: cover;
 		    background-repeat: no-repeat;
 		    background-position: center 0;
-      }
-      .card{
-        opacity: 0.75;
       }
     </style>
   </head>

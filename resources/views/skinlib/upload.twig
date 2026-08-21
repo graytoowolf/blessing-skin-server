@@ -2,8 +2,12 @@
 
 {% block title %}{{ trans('skinlib.upload.title') }}{% endblock %}
 
+{% block css %}
+  {{ include('assets.show-css', ignore_missing = true) }}
+{% endblock %}
+
 {% block content %}
-  <div class="content-wrapper">
+  <div class="content-wrapper mc-show">
     <div class="container">
       <div class="content-header">
         <div class="container-fluid">

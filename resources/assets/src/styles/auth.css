@@ -1,8 +1,360 @@
+/**
+ * Blessing Skin - Auth Pages Styles (Minecraft Pixel Theme)
+ * 页面：/auth/login /auth/register /auth/forgot /auth/reset /auth/verify /auth/bind
+ * 与 skinlib-show.css / mc-theme.css 设计系统完全同步：
+ * bg.webp 深板岩混合背景 + MC 面板卡片 + 凹陷输入槽 + 石质按钮 + 草方块绿主按钮
+ */
+
+@import '../fonts/minecraft.css';
+
+/* ==========================================
+   Minecraft Tokens（与其他页面一致）
+   ========================================== */
+:root {
+  --sa-bg: #141419;
+  --sa-surface: #1d1d21;
+  --sa-elevated: #26262c;
+  --sa-stone: #4a4a52;
+  --sa-stone-light: #6c6c75;
+  --sa-stone-dark: #2a2a30;
+  --sa-border-dark: #0c0c0f;
+  --sa-inset-light: #3f3f46;
+  --sa-inset-dark: #141417;
+  --sa-grass: #5ebd3e;
+  --sa-grass-light: #7ed957;
+  --sa-grass-dark: #49962f;
+  --sa-red: #ff5555;
+  --sa-gold: #fed64b;
+  --sa-text: #e8e8e8;
+  --sa-text-dim: #9a9aa5;
+  --sa-font: 'Minecraft', 'Courier New', monospace;
+  --sa-hard-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  --sa-transition: 0.15s steps(3);
+}
+
+/* ==========================================
+   页面背景 — bg.webp + 深板岩压暗混合（与首页首屏一致）
+   （覆盖 AdminLTE .login-page 渐变与 base.twig 内联样式）
+   ========================================== */
+.login-page {
+  background-color: rgba(20, 20, 25, 0.78) !important;
+  background-blend-mode: multiply !important;
+  background-attachment: scroll !important;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 2rem 1rem;
+}
+
+/* ==========================================
+   站点标题 — 像素字体 + 硬阴影
+   ========================================== */
+.login-logo {
+  margin-bottom: 1.25rem;
+}
+
 .login-logo a {
-  font-family: Minecraft;
-  transition: all 0.2s ease-in-out;
+  font-family: var(--sa-font);
+  font-size: 1.6rem;
+  font-weight: 400;
+  color: #fff !important;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.6);
+  text-decoration: none;
 }
 
 .login-logo a:hover {
-  color: #42a5f5;
+  color: var(--sa-grass-light) !important;
+}
+
+/* ==========================================
+   登录/注册卡片 — MC 面板（覆盖 AdminLTE 半透明白卡）
+   ========================================== */
+.login-page .card {
+  background: var(--sa-elevated) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--sa-hard-shadow) !important;
+  opacity: 1 !important; /* 覆盖 base.twig 内联 opacity:0.75 */
+  max-width: 440px;
+  width: 100%;
+}
+
+.login-page .card-body {
+  padding: 1.75rem;
+}
+
+/* 卡片顶部草方块绿条纹 — 与导航栏底边呼应 */
+.login-page .card::before {
+  content: '';
+  display: block;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--sa-grass) 0 8px,
+    var(--sa-grass-dark) 8px 16px
+  );
+  border-bottom: 2px solid var(--sa-border-dark);
+}
+
+.login-card-body {
+  color: var(--sa-text);
+  font-family: var(--sa-font);
+}
+
+/* 卡片体内层 — 关键覆盖：
+   AdminLTE 给 .login-card-body/.register-card-body 设 background-color:#fff，
+   白色内层会盖住外层 .card 的深色面板（浅灰文字在白底上不可读），
+   必须显式置 transparent 让深色面板透出 */
+.login-page .login-card-body,
+.login-page .register-card-body {
+  background: transparent !important;
+  background-color: transparent !important;
+  border-top: 0 !important;
+  color: var(--sa-text) !important;
+  padding: 1.75rem !important;
+  box-shadow: none !important;
+}
+
+/* 卡片内提示文字（"登录以管理你的皮肤"等）— AdminLTE 默认深灰 #666，深底上不可读 */
+.login-page .login-box-msg,
+.login-page label,
+.login-page small {
+  color: var(--sa-text-dim) !important;
+  font-family: var(--sa-font);
+}
+
+/* ==========================================
+   输入框 — MC 凹陷输入槽（方形深色 inset）
+   ========================================== */
+.login-page .input-group {
+  border-radius: 0;
+}
+
+.login-page .form-control {
+  background: var(--sa-inset-dark) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--sa-text) !important;
+  font-family: var(--sa-font);
+  font-size: 0.85rem;
+  height: 44px;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45);
+  transition: none;
+}
+
+.login-page .form-control::placeholder {
+  color: var(--sa-text-dim);
+}
+
+.login-page .form-control:focus {
+  border-color: var(--sa-grass) !important;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 2px rgba(94, 189, 62, 0.25) !important;
+  background: #191920 !important;
+}
+
+/* 输入框右侧图标槽 — 石质块（不限 append/prepend） */
+.login-page .input-group-text {
+  background: var(--sa-stone) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--sa-text-dim) !important;
+  box-shadow: inset 1px 1px 0 var(--sa-stone-light),
+    inset -1px -1px 0 var(--sa-stone-dark);
+}
+
+/* 显示密码按钮（眼睛）— 石质小按钮 */
+.login-page .input-group-append .btn-outline-secondary {
+  background: var(--sa-stone) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--sa-text) !important;
+  box-shadow: none;
+  transition: none;
+}
+
+.login-page .input-group-append .btn-outline-secondary:hover {
+  background: #55555e !important;
+  color: #fff !important;
+}
+
+/* ==========================================
+   主按钮（登录/注册）— MC 草方块绿开始按钮
+   ========================================== */
+.login-page .btn-primary {
+  background: var(--sa-grass) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  color: #fff !important;
+  font-family: var(--sa-font);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  padding: 0.65rem 0.9rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  box-shadow: inset 2px 2px 0 var(--sa-grass-light),
+    inset -2px -2px 0 var(--sa-grass-dark), 4px 4px 0 rgba(0, 0, 0, 0.45);
+  transition: none;
+  cursor: pointer;
+}
+
+.login-page .btn-primary:hover:not(:disabled) {
+  background: #67c947 !important;
+  transform: translate(-1px, -1px);
+  box-shadow: inset 2px 2px 0 var(--sa-grass-light),
+    inset -2px -2px 0 var(--sa-grass-dark), 5px 5px 0 rgba(0, 0, 0, 0.5);
+}
+
+.login-page .btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--sa-grass-dark),
+    inset -2px -2px 0 var(--sa-grass-light);
+}
+
+.login-page .btn-primary:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   密码强度条 — 方形硬边 MC 进度槽
+   ========================================== */
+.login-page .progress {
+  background: var(--sa-inset-dark) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  height: 10px !important;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.login-page .progress-bar {
+  border-radius: 0 !important;
+  transition: none;
+}
+
+/* 强度色对齐 MC 色系 */
+.login-page .progress-bar.bg-danger {
+  background: var(--sa-red) !important;
+}
+.login-page .progress-bar.bg-warning {
+  background: var(--sa-gold) !important;
+}
+.login-page .progress-bar.bg-success {
+  background: var(--sa-grass) !important;
+}
+
+/* 密码要求提示行 */
+.login-page .text-muted {
+  color: var(--sa-text-dim) !important;
+  font-family: var(--sa-font);
+}
+
+.login-page .text-success {
+  color: var(--sa-grass-light) !important;
+  font-family: var(--sa-font);
+}
+
+/* ==========================================
+   记住我复选框 — MC 方形勾选框
+   ========================================== */
+.login-page .custom-control-label::before {
+  background: var(--sa-inset-dark) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+.login-page .custom-control-input:checked ~ .custom-control-label::before {
+  background: var(--sa-grass) !important;
+  border-color: var(--sa-border-dark) !important;
+}
+
+.login-page .custom-control-label {
+  color: var(--sa-text-dim);
+  font-family: var(--sa-font);
+  font-size: 0.8rem;
+}
+
+/* ==========================================
+   链接与提示行 — 草方块绿
+   ========================================== */
+.login-page a {
+  color: var(--sa-grass-light) !important;
+  font-family: var(--sa-font);
+  font-size: 0.8rem;
+  text-decoration: none;
+}
+
+.login-page a:hover {
+  color: #fff !important;
+}
+
+/* notice / message 行文字 */
+.login-page p,
+.login-page .login-card-body > div {
+  font-family: var(--sa-font);
+}
+
+.login-page .alert {
+  border-radius: 0 !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  font-family: var(--sa-font);
+}
+
+/* OAuth 登录按钮行（如有）— 石质 */
+.login-page .btn-light,
+.login-page .btn-default {
+  background: var(--sa-stone) !important;
+  border: 2px solid var(--sa-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--sa-text) !important;
+  font-family: var(--sa-font);
+  box-shadow: inset 1px 1px 0 var(--sa-stone-light),
+    inset -1px -1px 0 var(--sa-stone-dark);
+}
+
+.login-page .btn-light:hover,
+.login-page .btn-default:hover {
+  background: #55555e !important;
+  color: #fff !important;
+}
+
+/* ==========================================
+   验证码等其他输入控件兜底
+   ========================================== */
+.login-page input[type='checkbox'] {
+  accent-color: var(--sa-grass);
+}
+
+.login-page select.form-control {
+  height: auto;
+}
+
+/* ==========================================
+   响应式
+   ========================================== */
+@media (max-width: 575.98px) {
+  .login-page .card-body {
+    padding: 1.25rem;
+  }
+
+  .login-page .form-control {
+    font-size: 0.78rem;
+    height: 40px;
+  }
+
+  .login-logo a {
+    font-size: 1.3rem;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .login-page .btn-primary,
+  .login-page .form-control {
+    transition: none;
+  }
 }

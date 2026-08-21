@@ -1,0 +1,283 @@
+/**
+ * Blessing Skin - Shared Minecraft Pixel Theme (navbar + footer)
+ * 适用页面：首页（home.twig）、皮肤库（skinlib/base.twig）
+ * 设计：深板岩底色 + 像素草地绿边缘 + Minecraft 像素字体 + 石质按钮交互
+ */
+
+@import '../fonts/minecraft.css';
+
+/* ==========================================
+   Minecraft Design Tokens
+   ========================================== */
+:root {
+  --mc-bg: #1d1d21; /* deepslate 深板岩 */
+  --mc-bg-page: #141419; /* 页面背景 */
+  --mc-bg-elevated: #26262c; /* polished deepslate 抬升面板 */
+  --mc-stone: #4a4a52; /* stone 石质按钮 */
+  --mc-stone-light: #6c6c75; /* 石块高光边 */
+  --mc-stone-dark: #2a2a30; /* 石块阴影边 */
+  --mc-border-dark: #0c0c0f; /* obsidian 黑曜石边 */
+  --mc-grass: #5ebd3e; /* grass block 草方块绿 */
+  --mc-grass-light: #7ed957;
+  --mc-grass-dark: #49962f;
+  --mc-red: #ff5555; /* Minecraft UI 红 */
+  --mc-red-dark: #a83232;
+  --mc-gold: #fed64b; /* Minecraft 金 */
+  --mc-text: #e8e8e8; /* Minecraft UI 白 */
+  --mc-text-dim: #9a9aa5;
+  --mc-text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  --mc-font: 'Minecraft', 'Courier New', monospace;
+}
+
+/* ==========================================
+   Navbar shell（统一覆盖透明/滚动所有状态）
+   ========================================== */
+.mc-navbar,
+.mc-navbar.transparent,
+.mc-navbar.scrolled,
+.mc-navbar:not(.transparent) {
+  background: var(--mc-bg) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+.mc-navbar {
+  position: relative;
+  z-index: 1000;
+  min-height: 60px;
+  padding: 0.5rem 0;
+}
+
+/* 首页 fixed-top 导航栏 — 恢复 Bootstrap 固定定位
+   （上方 .mc-navbar 的 position:relative 会覆盖 .fixed-top，
+    此处更高优先级选择器确保首页导航栏固定在页面顶部） */
+.mc-navbar.fixed-top {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1030;
+}
+
+/* 像素网格纹理覆盖层 */
+.mc-navbar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.015) 0 2px,
+      transparent 2px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.015) 0 2px,
+      transparent 2px 4px
+    );
+}
+
+/* 像素草地绿底边 */
+.mc-navbar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass) 0 8px,
+    var(--mc-grass-dark) 8px 16px
+  );
+  box-shadow: 0 2px 0 var(--mc-border-dark);
+  z-index: -1;
+}
+
+.mc-navbar .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* ==========================================
+   Brand（重置首页渐变文字，统一像素字体）
+   ========================================== */
+.mc-navbar .navbar-brand {
+  font-family: var(--mc-font) !important;
+  font-size: 1.15rem !important;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: var(--mc-text) !important;
+  text-shadow: var(--mc-text-shadow);
+  padding: 0.4rem 0.6rem;
+  text-transform: uppercase;
+  background: none !important;
+  -webkit-background-clip: border-box !important;
+  background-clip: border-box !important;
+  -webkit-text-fill-color: var(--mc-text) !important;
+  text-decoration: none !important;
+}
+
+.mc-navbar .navbar-brand:hover {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  background: var(--mc-stone) !important;
+  box-shadow: inset 2px 2px 0 var(--mc-stone-light),
+    inset -2px -2px 0 var(--mc-stone-dark);
+}
+
+/* ==========================================
+   Nav links — Minecraft 石质按钮
+   ========================================== */
+.mc-navbar .nav-link {
+  font-family: var(--mc-font) !important;
+  font-size: 0.85rem !important;
+  font-weight: 400;
+  color: var(--mc-text) !important;
+  text-shadow: var(--mc-text-shadow);
+  border-radius: 0 !important;
+  padding: 0.5rem 0.9rem !important;
+  transition: none;
+}
+
+.mc-navbar .nav-link:hover,
+.mc-navbar .nav-link:focus {
+  background: var(--mc-stone) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--mc-stone-light),
+    inset -2px -2px 0 var(--mc-stone-dark);
+}
+
+.mc-navbar .nav-link:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--mc-stone-dark),
+    inset -2px -2px 0 var(--mc-stone-light);
+}
+
+/* 当前页指示 — 草地绿像素下划线 */
+.mc-navbar .nav-item.active .nav-link {
+  color: #fff !important;
+  box-shadow: inset 0 -4px 0 var(--mc-grass);
+}
+
+.mc-navbar .nav-item.active .nav-link:hover {
+  background: var(--mc-stone) !important;
+  box-shadow: inset 2px 2px 0 var(--mc-stone-light),
+    inset -2px -2px 0 var(--mc-stone-dark), inset 0 -4px 0 var(--mc-grass);
+}
+
+/* ==========================================
+   Dropdown — 像素面板
+   ========================================== */
+.mc-navbar .dropdown-menu {
+  background: var(--mc-bg-elevated) !important;
+  border: 2px solid var(--mc-border-dark) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 2px 2px 0 #3f3f46, inset -2px -2px 0 #141417,
+    6px 6px 0 rgba(0, 0, 0, 0.45) !important;
+  padding: 0.25rem 0 !important;
+  margin-top: 0.4rem !important;
+}
+
+.mc-navbar .dropdown-item {
+  font-family: var(--mc-font) !important;
+  font-size: 0.8rem !important;
+  font-weight: 400;
+  color: var(--mc-text) !important;
+  text-shadow: var(--mc-text-shadow);
+  border-radius: 0 !important;
+  padding: 0.5rem 1rem !important;
+}
+
+.mc-navbar .dropdown-item:hover,
+.mc-navbar .dropdown-item:focus {
+  background: var(--mc-grass) !important;
+  color: #fff !important;
+}
+
+.mc-navbar .dropdown-divider {
+  border-top: 2px solid #141417 !important;
+  margin: 0.25rem 0 !important;
+}
+
+/* ==========================================
+   头像与徽章 — 方形像素化
+   ========================================== */
+.mc-navbar .bs-avatar {
+  border-radius: 0 !important;
+  border: 2px solid var(--mc-stone-light);
+  image-rendering: pixelated;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.mc-navbar .badge {
+  border-radius: 0 !important;
+  background: var(--mc-red) !important;
+  color: #fff !important;
+  font-family: var(--mc-font) !important;
+  font-size: 0.65rem !important;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   暗色模式一致性
+   ========================================== */
+.dark-mode .mc-navbar,
+.mc-navbar.navbar-dark {
+  background: var(--mc-bg) !important;
+}
+
+/* ==========================================
+   页脚 — 像素面板 + 草地绿顶边（镜像导航栏）
+   ========================================== */
+.mc-footer,
+.main-footer {
+  background: var(--mc-bg) !important;
+  border-top: none !important;
+  color: var(--mc-text-dim) !important;
+  position: relative;
+  padding-top: 1.4rem;
+}
+
+.mc-footer::before,
+.main-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--mc-grass) 0 8px,
+    var(--mc-grass-dark) 8px 16px
+  );
+}
+
+.mc-footer a,
+.main-footer a {
+  color: var(--mc-grass-light) !important;
+}
+
+.mc-footer a:hover,
+.main-footer a:hover {
+  color: #fff !important;
+  text-decoration: none;
+}
+
+/* ==========================================
+   响应式
+   ========================================== */
+@media (max-width: 575.98px) {
+  .mc-navbar .navbar-brand {
+    font-size: 0.95rem !important;
+  }
+
+  .mc-navbar .nav-link {
+    padding: 0.4rem 0.6rem !important;
+    font-size: 0.75rem !important;
+  }
+}

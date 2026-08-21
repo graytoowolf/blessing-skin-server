@@ -41,7 +41,11 @@ async function main() {
     return
   }
 
-  const isDarkMode = document.body.classList.contains('dark-mode')
+  // MC 像素主题（mc-admin/mc-user）与 dark-mode 同为深色底，图表文字需用浅色
+  const isDarkMode =
+    document.body.classList.contains('dark-mode') ||
+    document.body.classList.contains('mc-admin') ||
+    document.body.classList.contains('mc-user')
   const textColor = isDarkMode ? '#fff' : '#000'
 
   const chartData: ChartData = await get('/admin/chart')

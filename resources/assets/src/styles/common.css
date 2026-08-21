@@ -29,3 +29,184 @@ aside [data-mark='nickname'] {
   text-align: center;
   width: 1.25em;
 }
+
+/* ==========================================
+   Minecraft 弹窗体系（Toast + Modal，全站生效）
+   Toast 挂 body 下使用 .alert-*；Modal 使用 .modal-content bg-*
+   与全站 MC 设计系统一致：深色面板 + 硬边框 + 硬阴影 + 左色条
+   ========================================== */
+:root {
+  --mc-bg: #141419;
+  --mc-surface: #1d1d21;
+  --mc-elevated: #26262c;
+  --mc-stone: #4a4a52;
+  --mc-stone-light: #6c6c75;
+  --mc-stone-dark: #2a2a30;
+  --mc-border: #0c0c0f;
+  --mc-inset: #141417;
+  --mc-grass: #5ebd3e;
+  --mc-grass-light: #7ed957;
+  --mc-grass-dark: #49962f;
+  --mc-red: #ff5555;
+  --mc-gold: #fed64b;
+  --mc-diamond: #4aedd9;
+  --mc-text: #e8e8e8;
+  --mc-text-dim: #9a9aa5;
+  --mc-font: 'Minecraft', 'Courier New', monospace;
+  --mc-hard-shadow: 6px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ---- Toast（Bootstrap alert 改 MC 面板 + 左色条） ---- */
+.alert {
+  border-radius: 0 !important;
+  border: 2px solid var(--mc-border) !important;
+  border-left: 6px solid var(--mc-stone) !important;
+  background: var(--mc-elevated) !important;
+  color: var(--mc-text) !important;
+  font-family: var(--mc-font);
+  font-size: 0.82rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  box-shadow: var(--mc-hard-shadow) !important;
+}
+
+.alert-success {
+  border-left-color: var(--mc-grass) !important;
+}
+.alert-info {
+  border-left-color: var(--mc-diamond) !important;
+}
+.alert-warning {
+  border-left-color: var(--mc-gold) !important;
+}
+.alert-danger {
+  border-left-color: var(--mc-red) !important;
+}
+
+/* Toast 图标与文字着色（按类型） */
+.alert-success .icon {
+  color: var(--mc-grass-light) !important;
+}
+.alert-info .icon {
+  color: var(--mc-diamond) !important;
+}
+.alert-warning .icon {
+  color: var(--mc-gold) !important;
+}
+.alert-danger .icon {
+  color: var(--mc-red) !important;
+}
+
+/* Toast 关闭按钮 × */
+.alert .close,
+.alert .close:hover {
+  color: var(--mc-text-dim) !important;
+  text-shadow: none !important;
+  outline: none;
+}
+
+/* ---- Modal（Bootstrap modal 改 MC 面板） ---- */
+.modal-content {
+  border-radius: 0 !important;
+  border: 2px solid var(--mc-border) !important;
+  background: var(--mc-elevated) !important;
+  box-shadow: var(--mc-hard-shadow) !important;
+}
+
+.modal-header,
+.modal-footer {
+  border-color: var(--mc-border) !important;
+  background: var(--mc-surface);
+}
+
+.modal-header {
+  padding: 0.75rem 1rem;
+}
+
+.modal-title {
+  font-family: var(--mc-font);
+  font-size: 0.95rem;
+  letter-spacing: 1px;
+  color: #fff !important;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+}
+
+/* Modal 头部/底部关闭按钮 × */
+.modal-header .close,
+.modal-header .close:hover {
+  color: var(--mc-text-dim) !important;
+  text-shadow: none !important;
+  outline: none;
+}
+
+.modal-body {
+  color: var(--mc-text) !important;
+  font-family: var(--mc-font);
+  font-size: 0.85rem;
+}
+
+/* Modal prompt 输入框 — MC 凹陷输入槽 */
+.modal-body .form-control {
+  background: var(--mc-inset) !important;
+  border: 2px solid var(--mc-border) !important;
+  border-radius: 0 !important;
+  color: var(--mc-text) !important;
+  font-family: var(--mc-font);
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+.modal-body .form-control:focus {
+  border-color: var(--mc-grass) !important;
+  background: #191920 !important;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 2px rgba(94, 189, 62, 0.25) !important;
+}
+
+.modal-body .invalid-feedback {
+  font-family: var(--mc-font);
+}
+
+/* Modal 底部按钮 — 主=草绿 / 次=石质（MC 按钮） */
+.modal-footer .btn {
+  border-radius: 0 !important;
+  border: 2px solid var(--mc-border) !important;
+  font-family: var(--mc-font);
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  transition: none;
+}
+
+.modal-footer .btn-primary {
+  background: var(--mc-grass) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--mc-grass-light),
+    inset -2px -2px 0 var(--mc-grass-dark), 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.modal-footer .btn-primary:hover {
+  background: #67c947 !important;
+  transform: translate(-1px, -1px);
+}
+
+.modal-footer .btn-primary:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--mc-grass-dark),
+    inset -2px -2px 0 var(--mc-grass-light);
+}
+
+.modal-footer .btn-secondary {
+  background: var(--mc-stone) !important;
+  color: var(--mc-text) !important;
+  box-shadow: inset 2px 2px 0 var(--mc-stone-light),
+    inset -2px -2px 0 var(--mc-stone-dark), 4px 4px 0 rgba(0, 0, 0, 0.45);
+}
+
+.modal-footer .btn-secondary:hover {
+  background: #55555e !important;
+  color: #fff !important;
+}
+
+/* Modal 遮罩 — 加深像素感 */
+.modal-backdrop {
+  background: #0a0a0d;
+}

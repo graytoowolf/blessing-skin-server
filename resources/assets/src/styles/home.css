@@ -1,126 +1,600 @@
+/**
+ * Blessing Skin - Homepage Styles (Minecraft Pixel Theme)
+ * 与皮肤库设计系统完全同步：mc-theme.css / skinlib-modern.css
+ * - 深板岩底色 + 像素网格纹理
+ * - Minecraft 像素字体 + 硬像素文字阴影
+ * - 石质按钮 / 草方块绿激活态 / 硬边框无圆角 / 硬阴影
+ * - 响应式适配所有设备尺寸
+ */
+
 @import '../fonts/minecraft.css';
-@import './avatar.css';
 
-body {
-  font-size: 16px;
+/* ==========================================
+   Design Tokens（与 skinlib-modern.css 一致）
+   ========================================== */
+:root {
+  --hp-bg: #141419; /* 深板岩页面底 */
+  --hp-surface: #1d1d21; /* 深板岩面板 */
+  --hp-elevated: #26262c; /* 抬升面板 */
+  --hp-stone: #4a4a52; /* 石质按钮 */
+  --hp-stone-light: #6c6c75; /* 石块高光边 */
+  --hp-stone-dark: #2a2a30; /* 石块阴影边 */
+  --hp-border-dark: #0c0c0f; /* 黑曜石边 */
+  --hp-inset-light: #3f3f46; /* 面板内嵌高光 */
+  --hp-inset-dark: #141417; /* 面板内嵌暗边 */
+  --hp-grass: #5ebd3e; /* 草方块绿 */
+  --hp-grass-light: #7ed957;
+  --hp-grass-dark: #49962f;
+  --hp-red: #ff5555; /* MC 红 */
+  --hp-red-dark: #a83232;
+  --hp-gold: #fed64b; /* MC 金 */
+  --hp-diamond: #4aedd9; /* 钻石青 */
+  --hp-text: #e8e8e8; /* MC UI 白 */
+  --hp-text-dim: #9a9aa5;
+  --hp-text-muted: rgba(232, 232, 232, 0.4);
+  --hp-text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  --hp-font: 'Minecraft', 'Courier New', monospace;
+  --hp-hard-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  --hp-hard-shadow-lg: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  --hp-transition: 0.15s steps(3);
 }
 
-.layout-top-nav > .hp-wrapper {
+/* ==========================================
+   页面骨架
+   ========================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+body.layout-top-nav {
+  background: var(--hp-bg) !important;
+  font-family: var(--hp-font);
+}
+
+/* 首屏容器 — 深板岩底 + 像素网格 + 背景图压暗 */
+.hp-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  /* 深板岩遮罩：与背景图 multiply 混合，压暗融合进 MC 色调（bg.webp） */
+  background-color: rgba(20, 20, 25, 0.72);
   background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center 0;
-  height: 100vh;
+  background-position: center;
+  background-blend-mode: multiply;
+  color: var(--hp-text);
+  padding-top: 60px;
 }
 
-.navbar {
-  transition: color 0.25s ease-in-out, border-color 0.25s ease-in-out,
-    background-color 0.25s ease-in-out;
-}
-.navbar.transparent {
-  background-color: rgba(255, 255, 255, 0.2);
-}
-.navbar.transparent .navbar-brand {
-  color: #5e5e5e;
-}
-.navbar-brand {
-  font-family: Minecraft;
-}
-.navbar-nav {
-  display: inline-flex;
-  align-items: center;
-  align-self: center;
-}
-
-.splash {
-  width: 80%;
-  height: 50%;
-  margin: auto;
+/* 像素网格纹理层 */
+.hp-wrapper::before {
+  content: '';
   position: absolute;
-  top: 100px;
+  inset: 0;
+  pointer-events: none;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.015) 0 2px,
+      transparent 2px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.015) 0 2px,
+      transparent 2px 4px
+    );
+}
+
+/* 底部草方块绿像素边（衔接导航栏语言，区分首屏与内容区） */
+.hp-wrapper::after {
+  content: '';
+  position: absolute;
   left: 0;
-  bottom: 0;
   right: 0;
-  text-align: center;
-}
-.splash-head {
-  color: #fff;
-  padding: 0.8em 0.5em 1em;
-  line-height: 1.5em;
-  margin: 0.2em 0 0.5em;
-  font-family: Minecraft;
-  text-shadow: 0 4px 3px rgba(0, 0, 0, 0.4), 0 8px 13px rgba(0, 0, 0, 0.1),
-    0 18px 23px rgba(0, 0, 0, 0.1);
-}
-.splash-subhead {
-  font-size: 16px;
-  letter-spacing: 0.05em;
-  margin-bottom: 3em;
-  color: #fff;
-  font-family: Ubuntu, 'Segoe UI', 'Microsoft Yahei', 'Microsoft Jhenghei',
-    sans-serif;
-}
-@media (max-width: 768px) {
-  .splash {
-    width: 100%;
-  }
-  .splash-head {
-    font-size: 200%;
-  }
-}
-@media (min-width: 768px) {
-  .splash-head {
-    font-size: 250%;
-  }
+  bottom: 0;
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--hp-grass) 0 8px,
+    var(--hp-grass-dark) 8px 16px
+  );
+  box-shadow: 0 -2px 0 var(--hp-border-dark);
+  z-index: 2;
 }
 
-.main-button {
-  color: #fff;
-  padding: 0.8em 2em;
-  border-radius: 5px;
-  background: transparent;
-  border: 1px solid #fff;
-  font-size: 120%;
-  transition: color 0.25s ease-in-out, border-color 0.25s ease-in-out,
-    background-color 0.25s ease-in-out;
-}
-.main-button:hover {
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
+/* 固定背景模式 */
 #fixed-bg {
   position: fixed;
-  z-index: -1;
-  height: 100vh;
-  width: 100%;
+  inset: 0;
   background-size: cover;
+  background-position: center;
+  z-index: -1;
+  filter: brightness(0.35) saturate(0.6);
 }
 
+/* 玻璃拟态装饰元素 — MC 风格下隐藏 */
+.blob,
+.scan-line {
+  display: none !important;
+}
+
+/* ==========================================
+   Hero（首屏主视觉）
+   ========================================== */
+.splash {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  padding: 4rem 1rem 5rem;
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* 眉标 — MC 物品提示框风格徽章 */
+.splash-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: var(--hp-elevated);
+  border: 2px solid var(--hp-border-dark);
+  border-radius: 0;
+  box-shadow: inset 2px 2px 0 var(--hp-inset-light),
+    inset -2px -2px 0 var(--hp-inset-dark), var(--hp-hard-shadow);
+  font-family: var(--hp-font);
+  font-size: 0.78rem;
+  letter-spacing: 1px;
+  color: var(--hp-grass-light);
+  text-shadow: var(--hp-text-shadow);
+  text-transform: uppercase;
+  margin-bottom: 1.75rem;
+}
+
+.splash-badge-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--hp-grass);
+  border: 1px solid var(--hp-grass-dark);
+  box-shadow: 0 0 0 2px rgba(94, 189, 62, 0.25);
+  animation: blink 1.6s steps(2) infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* 主标题 — 大号像素字 + 硬阴影 */
+.splash-head {
+  font-family: var(--hp-font);
+  font-size: clamp(2.1rem, 6vw, 3.6rem);
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 4px 4px 0 rgba(0, 0, 0, 0.6);
+  margin: 0 0 1.25rem;
+  line-height: 1.15;
+}
+
+/* 副标题 */
+.splash-subhead {
+  font-family: var(--hp-font);
+  font-size: clamp(0.85rem, 2vw, 1rem);
+  color: var(--hp-text-dim);
+  text-shadow: var(--hp-text-shadow);
+  line-height: 1.8;
+  max-width: 560px;
+  margin: 0 auto 2.5rem;
+}
+
+/* CTA 按钮组 */
+.splash-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+/* ==========================================
+   按钮 — MC 石质按钮（皮肤库同款交互）
+   ========================================== */
+.main-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0.75em 1.8em;
+  font-family: var(--hp-font);
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  text-decoration: none !important;
+  border-radius: 0;
+  border: 2px solid var(--hp-border-dark);
+  cursor: pointer;
+  transition: none;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  position: relative;
+}
+
+/* 主按钮 — 草方块绿（复刻 MC 开始游戏按钮） */
+.main-button.primary {
+  background: var(--hp-grass);
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--hp-grass-light),
+    inset -2px -2px 0 var(--hp-grass-dark), var(--hp-hard-shadow);
+}
+
+.main-button.primary:hover {
+  background: #67c947;
+  color: #fff !important;
+  transform: translate(-1px, -1px);
+  box-shadow: inset 2px 2px 0 var(--hp-grass-light),
+    inset -2px -2px 0 var(--hp-grass-dark), var(--hp-hard-shadow-lg);
+}
+
+.main-button.primary:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--hp-grass-dark),
+    inset -2px -2px 0 var(--hp-grass-light);
+}
+
+/* 次按钮 — 石质（复刻 MC 普通按钮） */
+.main-button.ghost {
+  background: var(--hp-stone);
+  color: var(--hp-text) !important;
+  box-shadow: inset 2px 2px 0 var(--hp-stone-light),
+    inset -2px -2px 0 var(--hp-stone-dark), var(--hp-hard-shadow);
+}
+
+.main-button.ghost:hover {
+  background: #55555e;
+  color: #fff !important;
+  transform: translate(-1px, -1px);
+  box-shadow: inset 2px 2px 0 var(--hp-stone-light),
+    inset -2px -2px 0 var(--hp-stone-dark), var(--hp-hard-shadow-lg);
+}
+
+.main-button.ghost:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--hp-stone-dark),
+    inset -2px -2px 0 var(--hp-stone-light);
+}
+
+/* ==========================================
+   滚动指示器 — 像素箭头
+   ========================================== */
+.scroll-indicator {
+  position: absolute;
+  left: 50%;
+  bottom: 32px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--hp-font);
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  color: var(--hp-text-muted);
+  text-shadow: var(--hp-text-shadow);
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.scroll-indicator-line {
+  width: 2px;
+  height: 34px;
+  background: repeating-linear-gradient(
+    180deg,
+    var(--hp-grass) 0 4px,
+    transparent 4px 8px
+  );
+  animation: scrollHint 1.6s steps(4) infinite;
+}
+
+@keyframes scrollHint {
+  0% {
+    transform: scaleY(0.3);
+    transform-origin: top;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: top;
+  }
+  100% {
+    transform: scaleY(0.3);
+    transform-origin: top;
+  }
+}
+
+/* ==========================================
+   特性区（Why Choose Us）
+   ========================================== */
 #intro {
-  padding: 50px 0;
-  border-top: 5px solid #bdc3c7;
-  background-color: #fff;
-}
-#intro i {
-  font-size: 80px;
+  background: var(--hp-bg);
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    );
+  padding: 5rem 0 4rem;
+  border-bottom: 2px solid var(--hp-border-dark);
 }
 
+/* 区块眉标 */
+.section-eyebrow {
+  display: inline-block;
+  font-family: var(--hp-font);
+  font-size: 0.72rem;
+  letter-spacing: 2px;
+  color: var(--hp-grass-light);
+  text-shadow: var(--hp-text-shadow);
+  text-transform: uppercase;
+  margin-bottom: 0.75rem;
+}
+
+/* 区块标题 — 像素大标题 */
+.section-title {
+  font-family: var(--hp-font);
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+  margin-bottom: 0.75rem;
+}
+
+/* 区块描述 */
+.section-desc {
+  font-family: var(--hp-font);
+  font-size: 0.85rem;
+  color: var(--hp-text-dim);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  margin-bottom: 0;
+}
+
+/* ==========================================
+   特性卡片 — 与皮肤库卡片同款
+   ========================================== */
+.feature-card {
+  background: var(--hp-elevated);
+  border: 2px solid var(--hp-border-dark);
+  border-radius: 0;
+  box-shadow: var(--hp-hard-shadow);
+  padding: 1.75rem 1.5rem;
+  height: 100%;
+  transition: transform var(--hp-transition), box-shadow var(--hp-transition),
+    border-color var(--hp-transition);
+}
+
+.feature-card:hover {
+  border-color: var(--hp-grass);
+  transform: translate(-2px, -2px);
+  box-shadow: var(--hp-hard-shadow-lg);
+}
+
+.feature-card h3 {
+  font-family: var(--hp-font);
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  margin: 1.25rem 0 0.75rem;
+  text-transform: uppercase;
+}
+
+.feature-card p {
+  font-family: var(--hp-font);
+  font-size: 0.8rem;
+  color: var(--hp-text-dim);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  line-height: 1.8;
+  margin: 0;
+}
+
+/* 图标槽 — 方形像素物品槽（棋盘格底纹同皮肤预览区） */
+.feature-card-icon {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  border-radius: 0;
+  border: 2px solid var(--hp-border-dark);
+  background-color: #17171c;
+  background-image: conic-gradient(
+    rgba(255, 255, 255, 0.025) 90deg,
+    transparent 90deg 180deg,
+    rgba(255, 255, 255, 0.025) 180deg 270deg,
+    transparent 270deg
+  );
+  background-size: 16px 16px;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.6), 2px 2px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* 图标配色 — MC 色系：草绿 / 钻石青 / 金 */
+.feature-card-icon.purple {
+  color: var(--hp-grass-light);
+  border-color: rgba(94, 189, 62, 0.45);
+}
+
+.feature-card-icon.cyan {
+  color: var(--hp-diamond);
+  border-color: rgba(74, 237, 217, 0.4);
+}
+
+.feature-card-icon.violet {
+  color: var(--hp-gold);
+  border-color: rgba(254, 214, 75, 0.45);
+}
+
+/* ==========================================
+   CTA 区块
+   ========================================== */
 #footer-wrap {
-  color: #fff;
-  background-color: #2f2f2f;
-  padding: 50px 0;
+  background: var(--hp-surface);
+  border-bottom: 2px solid var(--hp-border-dark);
+  padding: 4rem 0;
+  position: relative;
 }
 
-#copyright {
+/* 顶部草方块绿像素条（镜像首屏底边） */
+#footer-wrap::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--hp-grass) 0 8px,
+    var(--hp-grass-dark) 8px 16px
+  );
+}
+
+.footer-cta-title {
+  font-family: var(--hp-font);
+  font-size: clamp(1.2rem, 3vw, 1.7rem);
+  font-weight: 400;
   color: #fff;
+  letter-spacing: 1px;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+  margin: 0;
+  line-height: 1.5;
 }
-#copyright.with-intro {
-  background-color: #222;
-  padding: 15px 0;
+
+.footer-cta-desc {
+  font-family: var(--hp-font);
+  font-size: 0.82rem;
+  color: var(--hp-text-dim);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  margin-top: 0.75rem;
 }
+
+/* ==========================================
+   版权区
+   ========================================== */
+#copyright {
+  background: var(--hp-bg);
+  padding: 1.5rem 0;
+  font-family: var(--hp-font);
+  font-size: 0.75rem;
+  color: var(--hp-text-muted);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+#copyright a {
+  color: var(--hp-grass-light) !important;
+  text-decoration: none;
+}
+
+#copyright a:hover {
+  color: #fff !important;
+}
+
+/* 首屏内版权（无特性区模式） */
 #copyright.without-intro {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  padding: 16px 50px;
+  position: relative;
+  z-index: 2;
+}
+
+/* ==========================================
+   导航栏基础（MC 覆盖在 mc-theme.css 中）
+   ========================================== */
+#home-navbar .navbar-nav .nav-link {
+  color: var(--hp-text);
+}
+
+/* ==========================================
+   响应式
+   ========================================== */
+
+/* 平板 */
+@media (max-width: 991.98px) {
+  .splash {
+    padding: 3rem 1rem 4rem;
+  }
+
+  #intro {
+    padding: 4rem 0 3rem;
+  }
+
+  #footer-wrap {
+    padding: 3rem 0;
+    text-align: center;
+  }
+}
+
+/* 手机 */
+@media (max-width: 575.98px) {
+  .splash {
+    padding: 2.5rem 0.75rem 3.5rem;
+  }
+
+  .splash-badge {
+    font-size: 0.65rem;
+    padding: 5px 10px;
+    margin-bottom: 1.25rem;
+  }
+
+  .splash-subhead {
+    margin-bottom: 2rem;
+  }
+
+  .splash-buttons {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .main-button {
+    font-size: 0.82rem;
+    padding: 0.8em 1.2em;
+  }
+
+  .feature-card {
+    padding: 1.4rem 1.2rem;
+  }
+
+  .feature-card-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 1.2rem;
+  }
+
+  #intro {
+    padding: 3rem 0 2.5rem;
+  }
+
+  #footer-wrap {
+    padding: 2.5rem 0;
+  }
+
+  .scroll-indicator {
+    bottom: 20px;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .splash-badge-dot,
+  .scroll-indicator-line {
+    animation: none;
+  }
+
+  .feature-card,
+  .main-button {
+    transition: none;
+  }
 }

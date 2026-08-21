@@ -1,7 +1,6 @@
 import React from 'react'
 import { t } from '@/scripts/i18n'
 import { TextureType } from '@/scripts/types'
-import Button from './Button'
 import type { Filter } from './types'
 import { humanizeType } from './utils'
 
@@ -10,53 +9,30 @@ interface Props {
   onChange(filter: Filter): void
 }
 
-const FilterSelector: React.FC<Props> = (props) => {
-  const { filter, onChange } = props
+const FILTERS: { value: Filter; label: string; icon: string }[] = [
+  { value: 'skin', label: '', icon: 'fas fa-user' },
+  { value: TextureType.Steve, label: 'Steve', icon: 'fas fa-male' },
+  { value: TextureType.Alex, label: 'Alex', icon: 'fas fa-female' },
+  { value: TextureType.Cape, label: '', icon: 'fas fa-shield-alt' },
+]
 
-  const handleSkinClick = () => onChange('skin')
-  const handleSteveClick = () => onChange(TextureType.Steve)
-  const handleAlexClick = () => onChange(TextureType.Alex)
-  const handleCapeClick = () => onChange(TextureType.Cape)
-
+const FilterSelector: React.FC<Props> = ({ filter, onChange }) => {
   return (
     <>
-      <button
-        className="btn btn-default dropdown-toggle"
-        type="button"
-        data-toggle="dropdown"
-      >
-        {humanizeType(filter)}
-      </button>
-      <div className="dropdown-menu">
-        <Button
-          className="dropdown-item"
-          active={filter === 'skin'}
-          onClick={handleSkinClick}
-        >
-          {t('general.skin')}
-        </Button>
-        <Button
-          className="dropdown-item"
-          active={filter === TextureType.Steve}
-          onClick={handleSteveClick}
-        >
-          Steve
-        </Button>
-        <Button
-          className="dropdown-item"
-          active={filter === TextureType.Alex}
-          onClick={handleAlexClick}
-        >
-          Alex
-        </Button>
-        <Button
-          className="dropdown-item"
-          active={filter === TextureType.Cape}
-          onClick={handleCapeClick}
-        >
-          {t('general.cape')}
-        </Button>
-      </div>
+      {FILTERS.map(({ value, label, icon }) => {
+        const displayLabel = label || humanizeType(value)
+        return (
+          <button
+            key={value}
+            className={`skinlib-chip${filter === value ? ' active' : ''}`}
+            onClick={() => onChange(value)}
+            title={displayLabel}
+          >
+            <i className={icon} style={{ fontSize: '0.75em' }} />
+            {displayLabel}
+          </button>
+        )
+      })}
     </>
   )
 }

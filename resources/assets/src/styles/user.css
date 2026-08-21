@@ -1,0 +1,661 @@
+/**
+ * Blessing Skin - User Center & Admin Panel Styles (Minecraft Pixel Theme)
+ * 页面：/user/*（作用域 .mc-user）与 /admin/*（作用域 .mc-admin）
+ * 布局：AdminLTE sidebar 布局（main-header + main-sidebar + content-wrapper + main-footer）
+ * 与全站 MC 设计系统一致：深板岩 + 顶栏绿条纹 + MC 面板 + 石质按钮 + 草绿点缀
+ */
+
+@import '../fonts/minecraft.css';
+
+:root {
+  --su-bg: #141419;
+  --su-surface: #1d1d21;
+  --su-elevated: #26262c;
+  --su-stone: #4a4a52;
+  --su-stone-light: #6c6c75;
+  --su-stone-dark: #2a2a30;
+  --su-border: #0c0c0f;
+  --su-inset: #141417;
+  --su-grass: #5ebd3e;
+  --su-grass-light: #7ed957;
+  --su-grass-dark: #49962f;
+  --su-red: #ff5555;
+  --su-red-dark: #a83232;
+  --su-gold: #fed64b;
+  --su-diamond: #4aedd9;
+  --su-text: #e8e8e8;
+  --su-text-dim: #9a9aa5;
+  --su-font: 'Minecraft', 'Courier New', monospace;
+  --su-hard-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+}
+
+/* ==========================================
+   页面骨架 — 深板岩 + 像素网格
+   ========================================== */
+.mc-user.body,
+body.mc-user,
+.mc-admin.body,
+body.mc-admin {
+  background: var(--su-bg) !important;
+  font-family: var(--su-font);
+}
+
+:is(.mc-user, .mc-admin) .content-wrapper,
+.mc-admin .content-wrapper,
+:is(.mc-user, .mc-admin) .main-header,
+.mc-admin .main-header,
+:is(.mc-user, .mc-admin) .main-sidebar,
+.mc-admin .main-sidebar,
+:is(.mc-user, .mc-admin) .main-footer,
+.mc-admin .main-footer,
+.mc-admin .content-wrapper,
+.mc-admin .main-header,
+.mc-admin .main-sidebar,
+.mc-admin .main-footer {
+  background: var(--su-bg) !important;
+}
+
+:is(.mc-user, .mc-admin) .content-wrapper,
+.mc-admin .content-wrapper,
+.mc-admin .content-wrapper {
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ) !important;
+  color: var(--su-text);
+}
+
+/* 页头标题 — 像素字 */
+:is(.mc-user, .mc-admin) .content-header h1 {
+  font-family: var(--su-font);
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+}
+
+:is(.mc-user, .mc-admin) .breadcrumb {
+  background: transparent;
+}
+
+:is(.mc-user, .mc-admin) .content-header .breadcrumb-item a {
+  color: var(--su-grass-light) !important;
+}
+
+/* ==========================================
+   顶栏 main-header — 深板岩 + 草绿底条纹（与全站导航一致）
+   ========================================== */
+:is(.mc-user, .mc-admin) .main-header.navbar {
+  background: var(--su-surface) !important;
+  border-bottom: 3px solid var(--su-grass) !important;
+  box-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
+  color: var(--su-text);
+}
+
+:is(.mc-user, .mc-admin) .main-header .nav-link {
+  color: var(--su-text-dim) !important;
+}
+
+:is(.mc-user, .mc-admin) .main-header .nav-link:hover {
+  color: #fff !important;
+  background: rgba(94, 189, 62, 0.15);
+}
+
+/* 顶栏下拉菜单（通知/语言/用户菜单）— MC 深色像素面板 */
+:is(.mc-user, .mc-admin) .dropdown-menu {
+  background: var(--su-elevated) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--su-hard-shadow) !important;
+}
+
+:is(.mc-user, .mc-admin) .dropdown-item {
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+}
+
+:is(.mc-user, .mc-admin) .dropdown-item:hover {
+  background: var(--su-grass) !important;
+  color: #fff !important;
+}
+
+:is(.mc-user, .mc-admin) .dropdown-divider {
+  border-color: var(--su-border) !important;
+}
+
+:is(.mc-user, .mc-admin) .dropdown-header {
+  color: var(--su-text-dim) !important;
+  font-family: var(--su-font);
+}
+
+/* ==========================================
+   侧边栏 main-sidebar — 深板岩 MC 面板
+   ========================================== */
+:is(.mc-user, .mc-admin) .main-sidebar {
+  background: var(--su-surface) !important;
+  border-right: 2px solid var(--su-border) !important;
+  box-shadow: none !important; /* 去掉 elevation-3 柔影 */
+}
+
+/* 品牌名 — 像素字 + 底部草绿条纹 */
+:is(.mc-user, .mc-admin) .brand-link {
+  background: var(--su-surface) !important;
+  border-bottom: 3px solid var(--su-grass);
+  padding: 0.9rem 0;
+}
+
+:is(.mc-user, .mc-admin) .brand-text {
+  font-family: var(--su-font);
+  font-size: 1.05rem;
+  color: #fff !important;
+  letter-spacing: 1px;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* 用户面板（头像+昵称） */
+:is(.mc-user, .mc-admin) .user-panel {
+  border-bottom: 1px solid rgba(76, 76, 85, 0.3);
+}
+
+:is(.mc-user, .mc-admin) .user-panel .info a,
+.mc-admin .user-panel .info a,
+:is(.mc-user, .mc-admin) .user-panel .info span {
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 分组标题（用户中心/浏览/管理） */
+:is(.mc-user, .mc-admin) .nav-header {
+  color: var(--su-grass-light) !important;
+  font-family: var(--su-font);
+  font-size: 0.72rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 导航项 — 石质条，hover 绿 */
+:is(.mc-user, .mc-admin) .nav-sidebar .nav-link {
+  color: var(--su-text-dim) !important;
+  font-size: 0.82rem;
+  border-radius: 0;
+  border-left: 4px solid transparent;
+  margin-bottom: 2px;
+}
+
+:is(.mc-user, .mc-admin) .nav-sidebar .nav-link:hover {
+  color: #fff !important;
+  background: rgba(94, 189, 62, 0.18) !important;
+  border-left-color: var(--su-grass-light);
+}
+
+:is(.mc-user, .mc-admin) .nav-sidebar .nav-link.active,
+.mc-admin .nav-sidebar .nav-link.active,
+:is(.mc-user, .mc-admin) .nav-sidebar .nav-item.menu-open > .nav-link {
+  color: #fff !important;
+  background: var(--su-grass) !important;
+  box-shadow: inset 2px 2px 0 var(--su-grass-light),
+    inset -2px -2px 0 var(--su-grass-dark);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+:is(.mc-user, .mc-admin) .nav-sidebar .nav-icon {
+  color: inherit;
+}
+
+/* ==========================================
+   页脚 main-footer — 深色 + 顶部草绿边（视觉闭环）
+   ========================================== */
+:is(.mc-user, .mc-admin) .main-footer {
+  background: var(--su-surface) !important;
+  border-top: 3px solid var(--su-grass) !important;
+  color: var(--su-text-dim) !important;
+  font-family: var(--su-font);
+  font-size: 0.78rem;
+  padding: 0.85rem 1rem;
+}
+
+/* ==========================================
+   卡片 — MC 面板（覆盖 AdminLTE 白卡）
+   ========================================== */
+:is(.mc-user, .mc-admin) .card {
+  background: var(--su-elevated) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--su-hard-shadow) !important;
+  margin-bottom: 1.25rem;
+  color: var(--su-text);
+}
+
+:is(.mc-user, .mc-admin) .card-header {
+  background: var(--su-surface) !important;
+  border-bottom: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+:is(.mc-user, .mc-admin) .card-title {
+  font-family: var(--su-font);
+  font-size: 0.88rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  padding-left: 0.8rem;
+  position: relative;
+}
+
+:is(.mc-user, .mc-admin) .card-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 13px;
+  background: var(--su-grass);
+  box-shadow: inset 1px 1px 0 var(--su-grass-light),
+    inset -1px -1px 0 var(--su-grass-dark);
+}
+
+:is(.mc-user, .mc-admin) .card-body {
+  color: var(--su-text);
+  font-family: var(--su-font);
+  font-size: 0.82rem;
+}
+
+:is(.mc-user, .mc-admin) .card-footer {
+  background: var(--su-surface) !important;
+  border-top: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  color: var(--su-text-dim) !important;
+}
+
+/* InfoBox（积分数值框）— MC 面板 + 石质图标槽 */
+:is(.mc-user, .mc-admin) .info-box {
+  background: var(--su-elevated) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--su-hard-shadow) !important;
+}
+
+:is(.mc-user, .mc-admin) .info-box .info-box-icon {
+  background: var(--su-stone) !important;
+  border-right: 2px solid var(--su-border);
+  box-shadow: inset 2px 2px 0 var(--su-stone-light),
+    inset -2px -2px 0 var(--su-stone-dark);
+}
+
+:is(.mc-user, .mc-admin) .info-box-content {
+  color: var(--su-text);
+}
+
+:is(.mc-user, .mc-admin) .info-box-text {
+  font-family: var(--su-font);
+  color: var(--su-text-dim) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 0.72rem;
+}
+
+:is(.mc-user, .mc-admin) .info-box-number {
+  font-family: var(--su-font);
+  color: #fff !important;
+  font-size: 1.25rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* ==========================================
+   衣柜纹理卡（ClosetItem，emotion Card 浅灰底需压制）
+   ========================================== */
+:is(.mc-user, .mc-admin) .closet-card .card-body,
+.mc-admin .closet-card .card-body,
+:is(.mc-user, .mc-admin) .card .card-body.bg-light {
+  background: var(--su-inset) !important;
+}
+
+/* 纹理预览区 — 棋盘格物品槽纹理 */
+:is(.mc-user, .mc-admin) .card-img-top {
+  background: repeating-conic-gradient(
+        rgba(255, 255, 255, 0.03) 0% 25%,
+        transparent 0% 50%
+      )
+      0 0 / 16px 16px,
+    var(--su-inset) !important;
+  image-rendering: pixelated;
+}
+
+:is(.mc-user, .mc-admin) .card-footer .dropdown-item {
+  color: var(--su-text) !important;
+}
+
+/* ==========================================
+   表格 — 深色化（Players/OAuth）
+   ========================================== */
+:is(.mc-user, .mc-admin) .table {
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+}
+
+:is(.mc-user, .mc-admin) .table thead th {
+  background: var(--su-surface) !important;
+  border-bottom: 2px solid var(--su-border) !important;
+  color: var(--su-grass-light) !important;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+}
+
+:is(.mc-user, .mc-admin) .table td,
+.mc-admin .table td,
+:is(.mc-user, .mc-admin) .table th {
+  border-color: rgba(76, 76, 85, 0.35) !important;
+  color: var(--su-text);
+  vertical-align: middle;
+}
+
+:is(.mc-user, .mc-admin) .table tbody tr:hover {
+  background: rgba(94, 189, 62, 0.08) !important;
+  color: #fff !important;
+}
+
+/* ==========================================
+   按钮系统（scope 内）
+   ========================================== */
+:is(.mc-user, .mc-admin) .btn {
+  border-radius: 0 !important;
+  border: 2px solid var(--su-border) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  transition: none;
+}
+
+:is(.mc-user, .mc-admin) .btn-primary {
+  background: var(--su-grass) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--su-grass-light),
+    inset -2px -2px 0 var(--su-grass-dark), var(--su-hard-shadow);
+}
+
+:is(.mc-user, .mc-admin) .btn-primary:hover:not(:disabled) {
+  background: #67c947 !important;
+  transform: translate(-1px, -1px);
+}
+
+:is(.mc-user, .mc-admin) .btn-primary:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--su-grass-dark),
+    inset -2px -2px 0 var(--su-grass-light);
+}
+
+:is(.mc-user, .mc-admin) .btn-default,
+.mc-admin .btn-default,
+:is(.mc-user, .mc-admin) .btn-light,
+.mc-admin .btn-light,
+:is(.mc-user, .mc-admin) .btn-secondary {
+  background: var(--su-stone) !important;
+  color: var(--su-text) !important;
+  box-shadow: inset 2px 2px 0 var(--su-stone-light),
+    inset -2px -2px 0 var(--su-stone-dark);
+}
+
+:is(.mc-user, .mc-admin) .btn-default:hover,
+.mc-admin .btn-default:hover,
+:is(.mc-user, .mc-admin) .btn-light:hover,
+.mc-admin .btn-light:hover,
+:is(.mc-user, .mc-admin) .btn-secondary:hover {
+  background: #55555e !important;
+  color: #fff !important;
+}
+
+:is(.mc-user, .mc-admin) .btn-danger {
+  background: var(--su-red-dark) !important;
+  color: #ffd7d7 !important;
+  box-shadow: inset 2px 2px 0 #c74a4a, inset -2px -2px 0 #7a2424,
+    var(--su-hard-shadow);
+}
+
+:is(.mc-user, .mc-admin) .btn-danger:hover {
+  background: var(--su-red) !important;
+  color: #fff !important;
+}
+
+:is(.mc-user, .mc-admin) .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ==========================================
+   表单控件 — MC 凹陷输入槽（profile 等页）
+   ========================================== */
+:is(.mc-user, .mc-admin) .form-control {
+  background: var(--su-inset) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+  font-size: 0.85rem;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+:is(.mc-user, .mc-admin) .form-control::placeholder {
+  color: var(--su-text-dim);
+}
+
+:is(.mc-user, .mc-admin) .form-control:focus {
+  border-color: var(--su-grass) !important;
+  background: #191920 !important;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 2px rgba(94, 189, 62, 0.25) !important;
+}
+
+:is(.mc-user, .mc-admin) label {
+  color: var(--su-text-dim) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+}
+
+:is(.mc-user, .mc-admin) input[type='checkbox'],
+.mc-admin input[type='checkbox'],
+:is(.mc-user, .mc-admin) input[type='radio'] {
+  accent-color: var(--su-grass);
+}
+
+/* ==========================================
+   杂项
+   ========================================== */
+:is(.mc-user, .mc-admin) a {
+  color: var(--su-grass-light);
+}
+
+:is(.mc-user, .mc-admin) a:hover {
+  color: #fff;
+}
+
+:is(.mc-user, .mc-admin) .badge {
+  border-radius: 0 !important;
+  font-family: var(--su-font);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+:is(.mc-user, .mc-admin) .text-muted,
+.mc-admin .text-muted,
+:is(.mc-user, .mc-admin) .text-secondary {
+  color: var(--su-text-dim) !important;
+}
+
+:is(.mc-user, .mc-admin) .text-success {
+  color: var(--su-grass-light) !important;
+}
+
+:is(.mc-user, .mc-admin) .text-danger {
+  color: var(--su-red) !important;
+}
+
+:is(.mc-user, .mc-admin) .callout {
+  border-radius: 0 !important;
+  border: 2px solid var(--su-border) !important;
+  border-left: 6px solid var(--su-stone) !important;
+  background: var(--su-surface) !important;
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+}
+
+:is(.mc-user, .mc-admin) .callout-success {
+  border-left-color: var(--su-grass) !important;
+}
+:is(.mc-user, .mc-admin) .callout-danger {
+  border-left-color: var(--su-red) !important;
+}
+:is(.mc-user, .mc-admin) .callout-warning {
+  border-left-color: var(--su-gold) !important;
+}
+:is(.mc-user, .mc-admin) .callout-info {
+  border-left-color: var(--su-diamond) !important;
+}
+
+/* 分页 */
+:is(.mc-user, .mc-admin) .pagination .page-link {
+  background: var(--su-stone) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  color: var(--su-text) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+  margin: 0 2px;
+}
+
+:is(.mc-user, .mc-admin) .pagination .page-item.active .page-link {
+  background: var(--su-grass) !important;
+  color: #fff !important;
+}
+
+/* 空状态/提示文字 */
+:is(.mc-user, .mc-admin) .empty {
+  color: var(--su-text-dim);
+  font-family: var(--su-font);
+}
+
+/* ==========================================
+   管理面板特有组件
+   ========================================== */
+
+/* 选项卡（nav-tabs）— MC 石质标签页 */
+:is(.mc-user, .mc-admin) .nav-tabs {
+  border-bottom: 2px solid var(--su-border) !important;
+}
+
+:is(.mc-user, .mc-admin) .nav-tabs .nav-link {
+  border-radius: 0 !important;
+  border: 2px solid transparent !important;
+  border-bottom: none !important;
+  background: transparent;
+  color: var(--su-text-dim) !important;
+  font-family: var(--su-font);
+  font-size: 0.8rem;
+}
+
+:is(.mc-user, .mc-admin) .nav-tabs .nav-link:hover {
+  color: #fff !important;
+  background: rgba(94, 189, 62, 0.12);
+}
+
+:is(.mc-user, .mc-admin) .nav-tabs .nav-link.active {
+  background: var(--su-elevated) !important;
+  border-color: var(--su-border) !important;
+  color: var(--su-grass-light) !important;
+  box-shadow: inset 0 3px 0 var(--su-grass);
+}
+
+/* 斑马纹表格 — 深色交替行 */
+:is(.mc-user, .mc-admin) .table-striped tbody tr:nth-of-type(odd) {
+  background: rgba(255, 255, 255, 0.02) !important;
+}
+
+:is(.mc-user, .mc-admin) .table-striped tbody tr:nth-of-type(odd):hover {
+  background: rgba(94, 189, 62, 0.08) !important;
+}
+
+/* 输入组图标槽 — 石质 */
+:is(.mc-user, .mc-admin) .input-group-text {
+  background: var(--su-stone) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  color: var(--su-text-dim) !important;
+  box-shadow: inset 1px 1px 0 var(--su-stone-light),
+    inset -1px -1px 0 var(--su-stone-dark);
+}
+
+/* 开关（custom-switch）— 绿色 */
+:is(.mc-user, .mc-admin) .custom-control-label::before {
+  background: var(--su-inset) !important;
+  border: 2px solid var(--su-border) !important;
+  border-radius: 0 !important;
+  box-shadow: inset 1px 1px 0 rgba(0, 0, 0, 0.4);
+}
+
+:is(.mc-user, .mc-admin) .custom-switch .custom-control-label::before {
+  border-radius: 0 !important;
+}
+
+:is(.mc-user, .mc-admin)
+  .custom-control-input:checked
+  ~ .custom-control-label::before {
+  background: var(--su-grass) !important;
+  border-color: var(--su-border) !important;
+}
+
+:is(.mc-user, .mc-admin)
+  .custom-control-input:focus
+  ~ .custom-control-label::before {
+  box-shadow: 0 0 0 2px rgba(94, 189, 62, 0.25) !important;
+}
+
+/* 徽章底色对齐 MC 色系 */
+:is(.mc-user, .mc-admin) .badge-success {
+  background: var(--su-grass) !important;
+}
+:is(.mc-user, .mc-admin) .badge-danger {
+  background: var(--su-red-dark) !important;
+}
+:is(.mc-user, .mc-admin) .badge-warning {
+  background: var(--su-gold) !important;
+  color: #3d3000 !important;
+}
+:is(.mc-user, .mc-admin) .badge-info {
+  background: var(--su-diamond) !important;
+  color: #0c2b28 !important;
+}
+
+/* hr 分隔线 */
+:is(.mc-user, .mc-admin) hr {
+  border-color: rgba(76, 76, 85, 0.35) !important;
+}
+
+/* ==========================================
+   响应式
+   ========================================== */
+@media (max-width: 575.98px) {
+  :is(.mc-user, .mc-admin) .content-header h1 {
+    font-size: 1.15rem;
+  }
+
+  :is(.mc-user, .mc-admin) .btn {
+    font-size: 0.72rem;
+  }
+}

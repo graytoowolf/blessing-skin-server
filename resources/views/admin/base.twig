@@ -2,10 +2,11 @@
 <html lang="{{ locale }}">
   <head>
     {{ include('shared.head') }}
+    {{ include('assets.user-css', ignore_missing = true) }}
     <title>{% block title %}{% endblock %} - {{ site_name }}</title>
   </head>
 
-  <body class="{{ dark_mode ? 'dark-mode' : '' }} hold-transition sidebar-mini">
+  <body class="{{ dark_mode ? 'dark-mode' : '' }} hold-transition sidebar-mini mc-admin">
     <div class="wrapper">
       {{ include('shared.header') }}
       {{ include('shared.sidebar', {scope: 'admin'}) }}

@@ -3,6 +3,8 @@
   <head>
     {{ include('shared.head') }}
     <title>{% block title %}{% endblock %} - {{ site_name }}</title>
+    {{ include('assets.mc-css', ignore_missing = true) }}
+    {% block css %}{% endblock %}
     <style>
       .content-wrapper {
         background-image: url('{{ home_pic_url }}');
@@ -14,7 +16,7 @@
 
   <body class="{{ dark_mode ? 'dark-mode' : '' }} hold-transition layout-top-nav">
     <div class="wrapper">
-      <nav class="main-header navbar navbar-expand navbar-{{ navbar_color }} navbar-{{ color_mode }} ml-0">
+      <nav class="main-header mc-navbar navbar navbar-expand navbar-{{ navbar_color }} navbar-{{ color_mode }} ml-0">
         <div class="container">
           <div class="navbar-header">
             <a href="{{ url('/') }}" class="navbar-brand">{{ site_name }}</a>

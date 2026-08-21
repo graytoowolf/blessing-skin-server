@@ -1,0 +1,594 @@
+/**
+ * Blessing Skin - Texture Preview Page Styles (Minecraft Pixel Theme)
+ * 页面：/skinlib/show/{tid}（3D 预览器 + 详情面板 + 管理操作）
+ * 与 skinlib-modern.css / mc-theme.css 设计系统完全同步：
+ * 深板岩底 + 像素网格纹理 + MC 面板硬边框硬阴影 + 石质按钮 + 草方块绿点缀
+ */
+
+@import '../fonts/minecraft.css';
+
+/* ==========================================
+   Minecraft Tokens（与 skinlib-modern.css 一致）
+   ========================================== */
+:root {
+  --ss-bg: #141419;
+  --ss-surface: #1d1d21;
+  --ss-elevated: #26262c;
+  --ss-stone: #4a4a52;
+  --ss-stone-light: #6c6c75;
+  --ss-stone-dark: #2a2a30;
+  --ss-border-dark: #0c0c0f;
+  --ss-inset-light: #3f3f46;
+  --ss-inset-dark: #141417;
+  --ss-grass: #5ebd3e;
+  --ss-grass-light: #7ed957;
+  --ss-grass-dark: #49962f;
+  --ss-red: #ff5555;
+  --ss-red-dark: #a83232;
+  --ss-gold: #fed64b;
+  --ss-diamond: #4aedd9;
+  --ss-text: #e8e8e8;
+  --ss-text-dim: #9a9aa5;
+  --ss-text-muted: rgba(232, 232, 232, 0.4);
+  --ss-text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.55);
+  --ss-font: 'Minecraft', 'Courier New', monospace;
+  --ss-hard-shadow: 4px 4px 0 rgba(0, 0, 0, 0.4);
+  --ss-hard-shadow-lg: 6px 6px 0 rgba(0, 0, 0, 0.5);
+  --ss-transition: 0.15s steps(3);
+}
+
+/* ==========================================
+   页面骨架 — 深板岩 + 像素网格（覆盖 AdminLTE 与内联背景图）
+   ========================================== */
+.mc-show {
+  background: var(--ss-bg) !important;
+  background-image: repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.012) 0 2px,
+      transparent 2px 4px
+    ) !important;
+  background-repeat: repeat !important;
+  background-attachment: scroll !important;
+  min-height: 100vh;
+}
+
+/* 页头标题 */
+.mc-show .content-header h1 {
+  font-family: var(--ss-font);
+  font-size: 1.5rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55);
+}
+
+/* ==========================================
+   MC 面板 — 覆盖 AdminLTE .card
+   ========================================== */
+.mc-show .card {
+  background: var(--ss-elevated) !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+  box-shadow: var(--ss-hard-shadow) !important;
+  margin-bottom: 1.5rem;
+}
+
+.mc-show .card-header {
+  background: var(--ss-surface) !important;
+  border-bottom: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+  padding: 0.75rem 1rem;
+}
+
+/* 面板标题 — 左侧草方块绿色块 + 像素字 */
+.mc-show .card-title {
+  font-family: var(--ss-font);
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: var(--ss-text-shadow);
+  margin: 0;
+  padding-left: 0.85rem;
+  position: relative;
+}
+
+.mc-show .card-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 14px;
+  background: var(--ss-grass);
+  box-shadow: inset 1px 1px 0 var(--ss-grass-light),
+    inset -1px -1px 0 var(--ss-grass-dark);
+}
+
+.mc-show .card-body {
+  color: var(--ss-text);
+  font-family: var(--ss-font);
+  font-size: 0.82rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.mc-show .card-footer {
+  background: var(--ss-surface) !important;
+  border-top: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+}
+
+/* 详情行分隔线 — MC 石纹 */
+.mc-show .card-body .row {
+  border-bottom: 1px solid rgba(76, 76, 85, 0.35);
+  padding-bottom: 0.75rem;
+}
+
+.mc-show .card-body .row:last-child {
+  border-bottom: none;
+}
+
+.mc-show .card-body .col-4 {
+  color: var(--ss-text-dim);
+}
+
+/* ==========================================
+   3D 预览器卡片特化
+   ========================================== */
+/* 预览器标题徽章（数字指示器）— 方形 MC 徽章 */
+.mc-show .card-header .badge {
+  border-radius: 0 !important;
+  background: var(--ss-grass) !important;
+  color: #fff !important;
+  font-family: var(--ss-font);
+  font-size: 0.65rem !important;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  vertical-align: middle;
+}
+
+/* 预览器控制按钮（动画/暂停/旋转）— 石质小方块按钮
+   注意：ActionButton 为 emotion styled.i，运行时注入样式晚于本文件，
+   故需 !important 覆盖其 display/padding/hover 色 */
+.mc-show .card-header i {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  background: var(--ss-stone);
+  border: 2px solid var(--ss-border-dark);
+  border-radius: 0 !important;
+  color: var(--ss-text) !important;
+  width: 34px !important;
+  height: 30px !important;
+  margin-left: 4px;
+  padding: 0 !important;
+  cursor: pointer;
+  box-shadow: inset 1px 1px 0 var(--ss-stone-light),
+    inset -1px -1px 0 var(--ss-stone-dark);
+  transition: none;
+  font-size: 0.85rem;
+}
+
+.mc-show .card-header i:hover {
+  background: var(--ss-grass) !important;
+  color: #fff !important;
+  box-shadow: inset 1px 1px 0 var(--ss-grass-light),
+    inset -1px -1px 0 var(--ss-grass-dark);
+}
+
+/* 3D 画布容器 — 深色底 + MC 棋盘格边框效果 */
+.mc-show .card > div.p-0 {
+  background: #101014;
+  border-top: 2px solid var(--ss-border-dark);
+  border-bottom: 2px solid var(--ss-border-dark);
+}
+
+/* ==========================================
+   颜色选择按钮（白/黑/灰/翻页）— 圆点改方形像素块
+   ========================================== */
+.mc-show .btn-color {
+  border-radius: 0 !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.45) !important;
+  transition: none;
+  cursor: pointer;
+}
+
+.mc-show .btn-color:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(0, 0, 0, 0.55) !important;
+}
+
+.mc-show .btn-color.bg-green {
+  background: var(--ss-grass) !important;
+  color: #fff;
+}
+
+/* ==========================================
+   按钮系统 — MC 石质按钮（覆盖 Bootstrap/AdminLTE）
+   ========================================== */
+.mc-show .btn {
+  font-family: var(--ss-font);
+  font-size: 0.8rem;
+  font-weight: 400;
+  letter-spacing: 0.5px;
+  border-radius: 0 !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  transition: none;
+  padding: 0.45rem 0.9rem;
+  cursor: pointer;
+}
+
+/* 加入衣柜 / 应用 — 草方块绿 */
+.mc-show .btn-outline-success {
+  background: var(--ss-grass) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--ss-grass-light),
+    inset -2px -2px 0 var(--ss-grass-dark), var(--ss-hard-shadow);
+}
+
+.mc-show .btn-outline-success:hover {
+  background: #67c947 !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-outline-success:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--ss-grass-dark),
+    inset -2px -2px 0 var(--ss-grass-light);
+}
+
+/* 衣柜操作 — 钻石青 */
+.mc-show .btn-outline-primary {
+  background: var(--ss-diamond) !important;
+  color: #0c2b28 !important;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.25);
+  box-shadow: inset 2px 2px 0 #7ff2e5, inset -2px -2px 0 #2ba393,
+    var(--ss-hard-shadow);
+}
+
+.mc-show .btn-outline-primary:hover {
+  background: #5cf0de !important;
+  color: #0c2b28 !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-outline-primary:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 #2ba393, inset -2px -2px 0 #7ff2e5;
+}
+
+/* 头像/下载/举报 — 石质 */
+.mc-show .btn-outline-info,
+.mc-show .btn-outline-secondary {
+  background: var(--ss-stone) !important;
+  color: var(--ss-text) !important;
+  box-shadow: inset 2px 2px 0 var(--ss-stone-light),
+    inset -2px -2px 0 var(--ss-stone-dark), var(--ss-hard-shadow);
+}
+
+.mc-show .btn-outline-info:hover,
+.mc-show .btn-outline-secondary:hover {
+  background: #55555e !important;
+  color: #fff !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-outline-info:active,
+.mc-show .btn-outline-secondary:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--ss-stone-dark),
+    inset -2px -2px 0 var(--ss-stone-light);
+}
+
+.mc-show .btn-outline-secondary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 管理操作 — 设为私密（MC 金）/ 删除（MC 红） */
+.mc-show .btn-warning {
+  background: var(--ss-gold) !important;
+  color: #3d3000 !important;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow: inset 2px 2px 0 #ffe98a, inset -2px -2px 0 #c9a52e,
+    var(--ss-hard-shadow);
+}
+
+.mc-show .btn-warning:hover {
+  background: #ffdd5c !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-warning:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 #c9a52e, inset -2px -2px 0 #ffe98a;
+}
+
+.mc-show .btn-danger {
+  background: var(--ss-red-dark) !important;
+  color: #ffd7d7 !important;
+  box-shadow: inset 2px 2px 0 #c74a4a, inset -2px -2px 0 #7a2424,
+    var(--ss-hard-shadow);
+}
+
+.mc-show .btn-danger:hover {
+  background: var(--ss-red) !important;
+  color: #fff !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-danger:active {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 #7a2424, inset -2px -2px 0 #c74a4a;
+}
+
+/* 管理面板 — 警示面板用金色左边条区分 */
+.mc-show .card.card-warning {
+  border-color: rgba(254, 214, 75, 0.35) !important;
+}
+
+.mc-show .card.card-warning .card-title::before {
+  background: var(--ss-gold);
+  box-shadow: inset 1px 1px 0 #ffe98a, inset -1px -1px 0 #c9a52e;
+}
+
+/* ==========================================
+   详情面板杂项
+   ========================================== */
+/* 链接 — 草方块绿 */
+.mc-show a {
+  color: var(--ss-grass-light) !important;
+  text-decoration: none;
+}
+
+.mc-show a:hover {
+  color: #fff !important;
+}
+
+/* 点赞数 */
+.mc-show .text-red {
+  color: var(--ss-red) !important;
+  font-family: var(--ss-font);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+.mc-show .text-gray {
+  color: var(--ss-text-dim) !important;
+  font-family: var(--ss-font);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+}
+
+/* 上传者徽章 — 方形 */
+.mc-show .card-body .badge {
+  border-radius: 0 !important;
+  font-family: var(--ss-font);
+  font-size: 0.65rem;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.6);
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* 编辑按钮 */
+.mc-show .card-body button.btn-link,
+.mc-show .card-body a.btn-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: var(--ss-grass-light) !important;
+  padding: 0.15rem 0.3rem;
+}
+
+.mc-show .card-body button.btn-link:hover {
+  color: #fff !important;
+  transform: none;
+}
+
+/* 管理提示文字 */
+.mc-show .card-warning .card-body p {
+  color: var(--ss-text-dim);
+  margin: 0;
+}
+
+/* ==========================================
+   面包屑/滚动区域微调
+   ========================================== */
+.mc-show .content {
+  padding-top: 0.5rem;
+}
+
+.mc-show .breadcrumb {
+  background: transparent;
+}
+
+/* ==========================================
+   上传页（/skinlib/upload）特有组件
+   ========================================== */
+
+/* 文件选择槽 — MC 凹陷输入槽（与 form-control 同款） */
+.mc-show .custom-file {
+  border-radius: 0;
+}
+
+/* 文本输入框（材质名称等）— MC 凹陷输入槽
+   注意：Bootstrap 默认白底深字，必须覆盖，否则深色面板上出现白色区块 */
+.mc-show .form-control {
+  background: var(--ss-inset-dark) !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--ss-text) !important;
+  font-family: var(--ss-font);
+  font-size: 0.85rem;
+  height: 44px;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45);
+  transition: none;
+}
+
+.mc-show .form-control::placeholder {
+  color: var(--ss-text-dim);
+}
+
+.mc-show .form-control:focus {
+  border-color: var(--ss-grass) !important;
+  background: #191920 !important;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45),
+    0 0 0 2px rgba(94, 189, 62, 0.25) !important;
+}
+
+.mc-show .custom-file-label {
+  background: var(--ss-inset-dark) !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--ss-text) !important;
+  font-family: var(--ss-font);
+  font-size: 0.85rem;
+  height: 44px;
+  line-height: 2;
+  padding: 0.25rem 0.75rem;
+  box-shadow: inset 2px 2px 0 rgba(0, 0, 0, 0.45);
+}
+
+.mc-show .custom-file-label::after {
+  display: none; /* 隐藏原生"浏览"按钮，使用旁边的石质按钮 */
+}
+
+.mc-show .custom-file-input {
+  cursor: pointer;
+}
+
+/* 上传主按钮（btn-success）— 草方块绿（与衣柜按钮同款） */
+.mc-show .btn-success {
+  background: var(--ss-grass) !important;
+  color: #fff !important;
+  box-shadow: inset 2px 2px 0 var(--ss-grass-light),
+    inset -2px -2px 0 var(--ss-grass-dark), var(--ss-hard-shadow);
+}
+
+.mc-show .btn-success:hover:not(:disabled) {
+  background: #67c947 !important;
+  transform: translate(-1px, -1px);
+}
+
+.mc-show .btn-success:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: inset 2px 2px 0 var(--ss-grass-dark),
+    inset -2px -2px 0 var(--ss-grass-light);
+}
+
+/* 浏览文件按钮（btn-default）— 石质 */
+.mc-show .btn-default,
+.mc-show .btn-light {
+  background: var(--ss-stone) !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  border-radius: 0 !important;
+  color: var(--ss-text) !important;
+  font-family: var(--ss-font);
+  box-shadow: inset 2px 2px 0 var(--ss-stone-light),
+    inset -2px -2px 0 var(--ss-stone-dark);
+}
+
+.mc-show .btn-default:hover,
+.mc-show .btn-light:hover {
+  background: #55555e !important;
+  color: #fff !important;
+}
+
+/* 单选/复选 — MC 方形 accent（Steve/Alex/披风、设为私密） */
+.mc-show input[type='radio'],
+.mc-show input[type='checkbox'] {
+  accent-color: var(--ss-grass);
+  width: 1rem;
+  height: 1rem;
+  cursor: pointer;
+}
+
+/* 表单标签（含 card-footer 内的"设为私密"标签——AdminLTE 默认深色文字在深底上不可读） */
+.mc-show label {
+  color: var(--ss-text-dim) !important;
+  font-family: var(--ss-font);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+/* callout 提示框 — MC 深色面板 + 左色条（积分消耗/内容政策/私密提示） */
+.mc-show .callout {
+  border-radius: 0 !important;
+  border: 2px solid var(--ss-border-dark) !important;
+  border-left: 6px solid var(--ss-stone) !important;
+  background: var(--ss-surface) !important;
+  color: var(--ss-text) !important;
+  font-family: var(--ss-font);
+  font-size: 0.8rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.mc-show .callout-success {
+  border-left-color: var(--ss-grass) !important;
+}
+
+.mc-show .callout-danger {
+  border-left-color: var(--ss-red) !important;
+}
+
+.mc-show .callout-warning {
+  border-left-color: var(--ss-gold) !important;
+}
+
+.mc-show .callout-info {
+  border-left-color: var(--ss-diamond) !important;
+}
+
+/* 卡片 footer 内布局（默认深色文字，深底上不可读 → 浅灰） */
+.mc-show .card-footer {
+  color: var(--ss-text-dim) !important;
+}
+
+.mc-show .card-footer .container {
+  font-family: var(--ss-font);
+}
+
+/* ==========================================
+   响应式
+   ========================================== */
+@media (max-width: 575.98px) {
+  .mc-show .content-header h1 {
+    font-size: 1.2rem;
+  }
+
+  .mc-show .btn {
+    font-size: 0.72rem;
+    padding: 0.4rem 0.7rem;
+  }
+
+  .mc-show .card-header i {
+    width: 30px !important;
+    height: 26px !important;
+  }
+
+  /* 操作按钮允许换行堆叠 */
+  .mc-show .card-footer .d-flex {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .mc-show .card-footer .btn {
+    margin-bottom: 4px;
+  }
+}
+
+/* 减少动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .mc-show .btn,
+  .mc-show .btn-color {
+    transition: none;
+  }
+}

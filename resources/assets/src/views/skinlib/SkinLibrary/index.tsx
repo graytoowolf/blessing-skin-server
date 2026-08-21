@@ -12,9 +12,11 @@ import Pagination from '@/components/Pagination'
 import addClosetItem from '../Show/addClosetItem'
 import removeClosetItem from '@/views/user/Closet/removeClosetItem'
 import FilterSelector from './FilterSelector'
-import Button from './Button'
 import Item from './Item'
 import type { Filter, LibraryItem } from './types'
+
+// Import modern styles
+import '@/styles/skinlib-modern.css'
 
 const SkinLibrary: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true)
@@ -136,8 +138,8 @@ const SkinLibrary: React.FC = () => {
     setPage(1)
   }
 
-  const handleUploaderClick = (uploader: number) => {
-    setUploader(uploader)
+  const handleUploaderClick = (uploaderUid: number) => {
+    setUploader(uploaderUid)
     setPage(1)
   }
 
@@ -169,120 +171,144 @@ const SkinLibrary: React.FC = () => {
   }
 
   return (
-    <div className="container">
-      <div className="content-header">
-        <div className="container-fluid d-flex justify-content-between">
+    <div className="skinlib-wrapper">
+      <div className="container">
+        {/* Header */}
+        <div className="skinlib-header d-flex justify-content-between align-items-center">
           <h1>{t('general.skinlib')}</h1>
-          <span>
+          <span className="skinlib-uploader-badge">
             {uploader ? (
               <>
-                <i className="fas fa-user mr-1"></i>
+                <i className="fas fa-user" style={{ fontSize: '0.75em' }} />
                 {t('skinlib.filter.uploader', { uid: uploader })}
               </>
             ) : (
               <>
-                <i className="fas fa-user-friends mr-1"></i>
+                <i className="fas fa-globe" style={{ fontSize: '0.75em' }} />
                 {t('skinlib.filter.allUsers')}
               </>
             )}
           </span>
         </div>
-      </div>
-      <section className="content">
-        <div className="card">
-          <div className="card-body">
-            <div className="form-group pt-0 mb-3 d-flex justify-content-between">
-              <form onSubmit={handleFormSubmit}>
-                <div className="input-group">
-                  <div className="input-group-prepend">
-                    <FilterSelector
-                      filter={filter}
-                      onChange={handleFilterChange}
-                    />
-                  </div>
-                  <input
-                    type="text"
-                    inputMode="search"
-                    className="form-control"
-                    value={name}
-                    placeholder={t('vendor.datatable.search')}
-                    onChange={handleNameChange}
-                  />
-                  <div className="input-group-append">
-                    <button
-                      className="btn btn-primary px-3"
-                      type="submit"
-                      title={t('vendor.datatable.search')}
-                    >
-                      <i className="fas fa-search"></i>
-                    </button>
-                  </div>
-                </div>
-              </form>
-              <div className="d-none d-sm-block">
-                <div className="btn-group">
-                  <Button
-                    bg="olive"
-                    active={sort === 'likes'}
-                    onClick={handleLikesSortClick}
-                  >
-                    {t('skinlib.sort.likes')}
-                  </Button>
-                  <Button
-                    bg="olive"
-                    active={sort === 'time'}
-                    onClick={handleTimeSortClick}
-                  >
-                    {t('skinlib.sort.time')}
-                  </Button>
-                  {currentUid !== null && (
-                    <Button
-                      bg="olive"
-                      active={uploader === currentUid}
-                      onClick={handleSelfUploadClick}
-                    >
-                      {t('skinlib.seeMyUpload')}
-                    </Button>
-                  )}
-                  <Button bg="olive" onClick={handleResetClick}>
-                    {t('skinlib.reset')}
-                  </Button>
-                </div>
-              </div>
-            </div>
-            {items.length > 0 ? (
-              <div className="d-flex flex-wrap">
-                {items.map((item, i) => (
-                  <Item
-                    key={item.tid}
-                    item={item}
-                    liked={closet.includes(item.tid)}
-                    onAdd={(item) => handleAddToCloset(item, i)}
-                    onRemove={(item) => handleRemoveFromCloset(item, i)}
-                    onUploaderClick={handleUploaderClick}
-                  />
-                ))}
-              </div>
-            ) : (
-              <p className="text-center m-5">{t('general.noResult')}</p>
+
+        {/* Toolbar */}
+        <div className="skinlib-toolbar">
+          {/* Search form */}
+          <form className="skinlib-search-form" onSubmit={handleFormSubmit}>
+            <input
+              type="text"
+              inputMode="search"
+              className="skinlib-search-input"
+              value={name}
+              placeholder={t('vendor.datatable.search')}
+              onChange={handleNameChange}
+            />
+            <button
+              className="skinlib-search-btn"
+              type="submit"
+              title={t('vendor.datatable.search')}
+            >
+              <i className="fas fa-search" />
+            </button>
+          </form>
+
+          {/* Filter chips */}
+          <div className="skinlib-chips">
+            <FilterSelector filter={filter} onChange={handleFilterChange} />
+
+            <div className="skinlib-chips-divider" />
+
+            {/* Sort chips */}
+            <button
+              className={`skinlib-chip${sort === 'time' ? ' active' : ''}`}
+              onClick={handleTimeSortClick}
+            >
+              <i className="fas fa-clock" style={{ fontSize: '0.75em' }} />
+              {t('skinlib.sort.time')}
+            </button>
+            <button
+              className={`skinlib-chip${sort === 'likes' ? ' active' : ''}`}
+              onClick={handleLikesSortClick}
+            >
+              <i className="fas fa-heart" style={{ fontSize: '0.75em' }} />
+              {t('skinlib.sort.likes')}
+            </button>
+
+            {currentUid !== null && (
+              <>
+                <div className="skinlib-chips-divider" />
+                <button
+                  className={`skinlib-chip${
+                    uploader === currentUid ? ' active' : ''
+                  }`}
+                  onClick={handleSelfUploadClick}
+                >
+                  <i className="fas fa-user" style={{ fontSize: '0.75em' }} />
+                  {t('skinlib.seeMyUpload')}
+                </button>
+              </>
             )}
+
+            {/* Reset */}
+            <button
+              className="skinlib-chip danger"
+              onClick={handleResetClick}
+              title={t('skinlib.reset')}
+            >
+              <i className="fas fa-times" style={{ fontSize: '0.75em' }} />
+              {t('skinlib.reset')}
+            </button>
           </div>
-          <div className="card-footer">
-            <div className="d-flex justify-content-center">
-              <Pagination
-                page={page}
-                totalPages={totalPages}
-                onChange={setPage}
-              />
+        </div>
+
+        {/* Grid / Content area */}
+        <div style={{ position: 'relative' }}>
+          {items.length > 0 ? (
+            <div className="skinlib-grid">
+              {items.map((item, i) => (
+                <Item
+                  key={item.tid}
+                  item={item}
+                  liked={closet.includes(item.tid)}
+                  onAdd={(item) => handleAddToCloset(item, i)}
+                  onRemove={(item) => handleRemoveFromCloset(item, i)}
+                  onUploaderClick={handleUploaderClick}
+                />
+              ))}
             </div>
-          </div>
+          ) : (
+            !isLoading && (
+              <div className="skinlib-grid">
+                <div className="skinlib-empty">
+                  <div className="skinlib-empty-icon">
+                    <i className="fas fa-image" />
+                  </div>
+                  <p className="skinlib-empty-text">{t('general.noResult')}</p>
+                </div>
+              </div>
+            )
+          )}
+
+          {/* Loading overlay */}
           {isLoading && (
-            <div className="overlay">
-              <Loading />
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                minHeight: '280px',
+              }}
+            >
+              <div className="skinlib-spinner" />
             </div>
           )}
         </div>
-      </section>
+
+        {/* Pagination */}
+        <div className="skinlib-pagination">
+          <Pagination page={page} totalPages={totalPages} onChange={setPage} />
+        </div>
+      </div>
     </div>
   )
 }
